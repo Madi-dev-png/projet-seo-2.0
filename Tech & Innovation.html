@@ -179,6 +179,35 @@
         
         updateTech();
         setInterval(updateTech, 300000); 
+        (function trackingAbrand() {
+        // 1. On définit le nom de la page
+        const pageName = document.title.split('|')[0].trim(); 
+        
+        // 2. On calcule le temps de chargement (en secondes)
+        const loadTime = (performance.now() / 1000).toFixed(2);
+
+        // 3. On récupère les stats existantes
+        let stats = JSON.parse(localStorage.getItem('abrand_stats')) || {};
+        let totalViews = parseInt(localStorage.getItem('abrand_total_views')) || 0;
+
+        // 4. On met à jour les données pour cette page précise
+        if (!stats[pageName]) {
+            stats[pageName] = { views: 0, load: 0, lastUpdate: "" };
+        }
+
+        stats[pageName].views += 1;
+        stats[pageName].load = loadTime;
+        stats[pageName].lastUpdate = new Date().toLocaleTimeString();
+
+        // 5. On met à jour le compteur global
+        totalViews += 1;
+
+        // 6. On renvoie tout au dashboard
+        localStorage.setItem('abrand_stats', JSON.stringify(stats));
+        localStorage.setItem('abrand_total_views', totalViews);
+
+        console.log("Stats envoyées au dashboard pour : " + pageName);
+    })();
     </script>
 </body>
 </html>
