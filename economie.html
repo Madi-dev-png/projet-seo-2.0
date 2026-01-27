@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business & Éco | Abrand News CI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f8f8; }
+        .serif { font-family: 'Playfair Display', serif; }
+        .market-up { color: #009A44; font-weight: bold; }
+        
+        /* Barre de progression 5 min */
+        @keyframes progress { from { width: 0%; } to { width: 100%; } }
+        .seo-progress { height: 4px; background: #FF8200; animation: progress 300s linear infinite; }
+        
+        #main-article { transition: all 0.6s ease-in-out; }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <div class="bg-black text-white py-2 px-6 flex justify-between items-center text-[10px] font-black uppercase tracking-widest">
+        <div class="flex gap-4">
+            <span>BRVM: <span class="market-up" id="brvm-val">214.15</span></span>
+            <span class="text-gray-700">|</span>
+            <span>FLUX ÉCO MIS À JOUR TOUTES LES 5 MIN</span>
+        </div>
+        <div id="date-now"></div>
+    </div>
+
+    <header class="bg-white border-b border-gray-200 py-6">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-4">
+                <div class="rounded-full border-4 border-[#FF8200] h-20 w-20 overflow-hidden shadow-lg transition-transform hover:scale-110 duration-500 cursor-pointer">
+                    <img src="img/WhatsApp Image 2026-01-27 at 18.53.44.jpeg" alt="Logo Abrand" class="h-full w-full object-cover">
+                </div>
+                <div>
+                    <h1 class="serif text-3xl font-black uppercase tracking-tighter">Abrand <span class="text-[#FF8200]">News</span></h1>
+                    <p class="text-[9px] font-black text-gray-400 tracking-[0.3em] uppercase">Intelligence Économique Ivoirienne</p>
+                </div>
+            </div>
+            <nav class="flex gap-8 text-[11px] font-black uppercase">
+                <a href="index.html" class="hover:text-orange-500">Accueil</a>
+                <a href="#" class="text-orange-500 underline underline-offset-8 decoration-2">Économie</a>
+                <a href="#" class="hover:text-orange-500">Marchés</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto my-10">
+        <div class="bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200 mb-12">
+            <div class="seo-progress"></div>
+            <div class="p-8 md:p-12 lg:flex gap-12" id="main-article">
+                <div class="lg:w-2/3">
+                    <span id="article-tag" class="bg-orange-600 text-white px-3 py-1 text-[10px] font-black mb-6 inline-block uppercase tracking-widest">ÉCONOMIE</span>
+                    <h2 id="article-title" class="serif text-4xl md:text-5xl font-black mb-6 leading-tight text-gray-900">
+                        Chargement des analyses...
+                    </h2>
+                    <p id="article-desc" class="text-xl text-gray-600 leading-relaxed font-light italic mb-6 border-l-4 border-orange-500 pl-6">
+                        ...
+                    </p>
+                </div>
+                <div class="lg:w-1/3">
+                    <div class="rounded-xl overflow-hidden shadow-lg h-64">
+                        <img id="article-img" src="" class="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-8 border-t-4 border-black shadow-lg">
+            <h3 class="serif text-2xl font-black mb-8 italic uppercase tracking-tighter">Le Fil de l'Économie (Dépêches)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="border-l-4 border-orange-500 pl-5 group cursor-pointer">
+                    <span class="text-[10px] font-black text-gray-400 uppercase">14:20 • FINANCE</span>
+                    <h4 class="font-bold text-sm mt-1 group-hover:text-orange-600 transition">BCEAO : Nouvelles mesures pour stabiliser l'inflation dans l'UEMOA.</h4>
+                    <p class="text-xs text-gray-500 mt-2">La banque centrale ajuste ses taux directeurs pour le prochain trimestre.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-5 group cursor-pointer">
+                    <span class="text-[10px] font-black text-gray-400 uppercase">11:05 • MINES</span>
+                    <h4 class="font-bold text-sm mt-1 group-hover:text-orange-600 transition">Exploitation minière : Un nouveau gisement d'or découvert à Boundiali.</h4>
+                    <p class="text-xs text-gray-500 mt-2">Les premières estimations prévoient une production record dès 2027.</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-5 group cursor-pointer">
+                    <span class="text-[10px] font-black text-gray-400 uppercase">08:45 • AGRI</span>
+                    <h4 class="font-bold text-sm mt-1 group-hover:text-orange-600 transition">Hévéa : Vers une hausse du prix garanti aux producteurs locaux.</h4>
+                    <p class="text-xs text-gray-500 mt-2">Le conseil Hévéa-Palmier à huile étudie une revalorisation du prix au kilo.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-black text-white py-12 px-6 mt-20 text-center">
+        <p class="text-[10px] font-bold tracking-widest opacity-50 uppercase">© 2026 ABRAND INTERNATIONAL - DIVISION BUSINESS CI</p>
+    </footer>
+
+    <script>
+        const articles = [
+            {
+                tag: "INFRASTRUCTURES",
+                title: "Port de San Pedro : Vers une zone franche industrielle mondiale.",
+                desc: "Le gouvernement intensifie ses investissements pour transformer le cacao localement avant l'exportation.",
+                img: "https://images.unsplash.com/photo-1524297204431-526487e47209?auto=format&fit=crop&w=1200"
+            },
+            {
+                tag: "AGRICULTURE",
+                title: "Cacao : Les nouveaux prix records boostent l'économie rurale.",
+                desc: "Les revenus des planteurs ont augmenté de 20%, stimulant la consommation intérieure en Côte d'Ivoire.",
+                img: "https://images.unsplash.com/photo-1586339941406-2b44847826cc?auto=format&fit=crop&w=1200"
+            },
+            {
+                tag: "TECH & FINANCE",
+                title: "Hub Digital : Pourquoi Abidjan attire les géants de la Fintech.",
+                desc: "Avec une croissance de 15% du mobile money, la capitale ivoirienne devient le centre névralgique du digital.",
+                img: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=1200"
+            }
+        ];
+
+        let currentIndex = 0;
+
+        function updateContent() {
+            const art = articles[currentIndex];
+            const main = document.getElementById('main-article');
+            
+            main.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('article-tag').innerText = art.tag;
+                document.getElementById('article-title').innerText = art.title;
+                document.getElementById('article-desc').innerText = art.desc;
+                document.getElementById('article-img').src = art.img;
+                document.title = art.title + " | Abrand Business";
+                main.style.opacity = '1';
+            }, 600);
+
+            currentIndex = (currentIndex + 1) % articles.length;
+        }
+
+        // Init Date
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('date-now').innerText = new Date().toLocaleDateString('fr-FR', dateOptions).toUpperCase();
+        
+        updateContent();
+        setInterval(updateContent, 300000); // 5 minutes
+
+        // Bourse
+        setInterval(() => {
+            const val = (214 + Math.random()).toFixed(2);
+            document.getElementById('brvm-val').innerText = val;
+        }, 15000);
+    </script>
+</body>
+</html>
