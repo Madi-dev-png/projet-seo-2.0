@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politique | Abrand News CI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fff;
+        }
+
+        .serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .bg-placeholder {
+            background-color: #f3f4f6;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="text-slate-900">
+
+    <header class="max-w-7xl mx-auto py-10 text-center border-b">
+        <h1 class="serif text-5xl font-black uppercase tracking-tighter">ABRAND <span
+                class="text-[#FF8200]">POLITIQUE</span></h1>
+        <p
+            class="text-[10px] tracking-[0.5em] font-bold text-gray-400 mt-2 italic bg-black text-white inline-block px-4 py-1">
+            DOSSIERS RÉGIONAUX • 2026</p>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+            <div class="lg:col-span-8">
+
+                <article class="group cursor-pointer mb-16">
+                    <div class="overflow-hidden bg-placeholder">
+                        <img src="https://images.unsplash.com/photo-1526470608268-f674ce90ebd4?auto=format&fit=crop&w=1200&q=80"
+                            alt="Gouvernement"
+                            class="w-full h-[500px] object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    </div>
+                    <div class="mt-6">
+                        <span
+                            class="bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black uppercase tracking-widest">Exclusif</span>
+                        <h2 class="serif text-5xl font-black mt-4 leading-tight group-hover:text-blue-700 transition">
+                            Décentralisation 2026 : Ce que prévoit la nouvelle loi pour les mairies.</h2>
+                        <p class="text-gray-600 mt-4 text-xl leading-relaxed">Le transfert de compétences vers les
+                            régions de Côte d'Ivoire entre dans sa phase finale. Analyse des impacts sur le budget
+                            local.</p>
+                    </div>
+                </article>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 border-t pt-10">
+                    <article class="group cursor-pointer">
+                        <div class="h-60 bg-placeholder overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=600&q=80"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition">
+                        </div>
+                        <span class="text-blue-600 font-black text-[10px] uppercase tracking-widest">Diplomatie</span>
+                        <h3 class="serif text-2xl font-bold mt-2 leading-tight">CEDEAO : Sommet extraordinaire à Abidjan
+                            pour la stabilité régionale.</h3>
+                    </article>
+
+                    <article class="group cursor-pointer">
+                        <div class="h-60 bg-placeholder overflow-hidden mb-4">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition">
+                        </div>
+                        <span class="text-green-600 font-black text-[10px] uppercase tracking-widest">Digital</span>
+                        <h3 class="serif text-2xl font-bold mt-2 leading-tight">E-Gouv : Le portail citoyen atteint 2
+                            millions d'utilisateurs actifs.</h3>
+                    </article>
+                </div>
+            </div>
+
+            <aside class="lg:col-span-4">
+                <div class="bg-slate-50 p-8 border-l-4 border-black mb-10">
+                    <h3 class="serif text-2xl font-black mb-6 italic">Flash Info</h3>
+                    <div id="poli-briefs" class="space-y-6">
+                    </div>
+                </div>
+
+                <div class="p-6 border-4 border-double border-gray-100 text-center">
+                    <p class="text-[10px] font-black uppercase text-gray-400 mb-4 tracking-[0.2em]">Citation du jour</p>
+                    <p class="serif text-xl italic font-bold">"La politique est l'art de rendre possible ce qui est
+                        nécessaire."</p>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <script>
+        // --- GESTION DES BREVES ---
+        const briefs = [
+            "Législatives 2026 : Ouverture des listes électorales lundi.",
+            "Yamoussoukro : Travaux de rénovation du Palais de l'Assemblée.",
+            "Sénat : Adoption du projet de loi sur l'économie verte.",
+            "Innovation : Vote d'un fonds de soutien aux startups ivoiriennes."
+        ];
+
+        function rotateBriefs() {
+            const container = document.getElementById('poli-briefs');
+            const shuffled = briefs.sort(() => 0.5 - Math.random()).slice(0, 3);
+            container.innerHTML = shuffled.map(b => `
+                <div class="border-b pb-4 fade-in">
+                    <p class="text-xs font-black text-orange-600 uppercase mb-1">Direct</p>
+                    <h4 class="font-bold text-sm leading-tight">${b}</h4>
+                </div>
+            `).join('');
+        }
+        setInterval(rotateBriefs, 15000);
+        rotateBriefs();
+
+        // --- TRACKING DASHBOARD ---
+        (function trackingAbrand() {
+            const pageName = document.title.split('|')[0].trim();
+            const loadTime = (performance.now() / 1000).toFixed(2);
+            let stats = JSON.parse(localStorage.getItem('abrand_stats')) || {};
+            let totalViews = parseInt(localStorage.getItem('abrand_total_views')) || 0;
+
+            if (!stats[pageName]) stats[pageName] = { views: 0, load: 0, lastUpdate: "" };
+
+            stats[pageName].views += 1;
+            stats[pageName].load = loadTime;
+            stats[pageName].lastUpdate = new Date().toLocaleTimeString();
+            totalViews += 1;
+
+            localStorage.setItem('abrand_stats', JSON.stringify(stats));
+            localStorage.setItem('abrand_total_views', totalViews.toString());
+        })();
+    </script>
+</body>
+
+</html>
