@@ -7,7 +7,6 @@
     <title>Dashboard Admin | Abrand News CI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -330,110 +329,82 @@
 
     </div>
 
-   <script>
-    // --- 1. CONFIGURATION SUPABASE ---
-    const SUPABASE_URL = 'https://vyqmlovhdfxavrtoaupv.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cW1sb3ZoZGZ4YXZydG9hdXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjY5NTIsImV4cCI6MjA4NTE0Mjk1Mn0.fq_xqw7oqYpoDJ-52asq0awEgw6ybUlJqISFkmfq-IM';
-    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    <script>
+        function insertTag(tag) {
+            const area = document.getElementById('article-content');
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            const text = area.value;
+            const before = text.substring(0, start);
+            const after = text.substring(end, text.length);
+            const selected = text.substring(start, end) || "Titre";
+            area.value = before + `<${tag}>` + selected + `</${tag}>` + after;
+            area.focus();
+        }
 
-    // --- 2. FONCTIONS ÉDITEUR (TES FONCTIONS ORIGINALES) ---
-    function insertTag(tag) {
-        const area = document.getElementById('article-content');
-        const start = area.selectionStart;
-        const end = area.selectionEnd;
-        const text = area.value;
-        const before = text.substring(0, start);
-        const after = text.substring(end, text.length);
-        const selected = text.substring(start, end) || "Titre";
-        area.value = before + `<${tag}>` + selected + `</${tag}>` + after;
-        area.focus();
-    }
+        function publish() {
+            const title = document.getElementById('article-title').value;
+            const content = document.getElementById('article-content').value;
+            const image = document.getElementById('article-image').value;
 
-    // --- 3. PUBLICATION VERS SUPABASE ---
-    async function publish() {
-        const title = document.getElementById('article-title').value;
-        const content = document.getElementById('article-content').value;
-        const image = document.getElementById('article-image').value;
+            if (!title || !content) return alert("Remplis le titre et le contenu !");
 
-        if (!title || !content) return alert("Remplis le titre et le contenu !");
+            const post = {
+                id: Date.now(),
+                title: title,
+                image: image || "https://via.placeholder.com/800x400",
+                content: content,
+                seo: {
+                    keywords: document.getElementById('seo-keywords').value,
+                    meta: document.getElementById('seo-meta').value,
+                    target: document.getElementById('seo-target').value,
+                    alt: document.getElementById('seo-alt').value,
+                    author: document.getElementById('seo-author').value,
+                    geo: document.getElementById('seo-geo').value
+                },
+                date: new Date().toLocaleString('fr-FR')
+            };
 
-        // On prépare l'objet pour Supabase
-        const post = {
-            title: title,
-            image: image || "https://via.placeholder.com/800x400",
-            content: content,
-            status: 'pending', // En attente de validation admin
-            author: document.getElementById('seo-author').value || "Rédaction Abrand",
-            seo: {
-                keywords: document.getElementById('seo-keywords').value,
-                meta: document.getElementById('seo-meta').value,
-                target: document.getElementById('seo-target').value,
-                alt: document.getElementById('seo-alt').value,
-                geo: document.getElementById('seo-geo').value
-            },
-            created_at: new Date()
-        };
+            let pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
+            pending.unshift(post);
+            localStorage.setItem('abrand_pending', JSON.stringify(pending));
 
-        try {
-            // Envoi à la table 'articles'
-            const { error } = await _supabase
-                .from('articles')
-                .insert([post]);
+            Swal.fire({ icon: 'success', title: 'Article publié', text: "L’article a été envoyé avec succès 🎉", timer: 3000, showConfirmButton: false });
 
-            if (error) throw error;
-
-            // Notification de succès avec ton SweetAlert original
-            Swal.fire({ 
-                icon: 'success', 
-                title: 'Article envoyé', 
-                text: "L’article est en attente de validation par l'administrateur 🎉", 
-                timer: 3000, 
-                showConfirmButton: false 
-            });
-
-            // On vide les champs
             document.getElementById('article-title').value = "";
             document.getElementById('article-content').value = "";
             document.getElementById('article-image').value = "";
             document.getElementById('seo-keywords').value = "";
-            document.getElementById('seo-meta').value = "";
-
-        } catch (err) {
-            console.error(err);
-            alert("Erreur lors de l'envoi à la base de données.");
         }
-    }
 
-    // --- 4. GESTION DES ONGLETS (STATS / BLOGGER) ---
-    function showTab(tabName) {
-        if (tabName === 'blogger') {
-            document.getElementById('section-stats').classList.add('hidden');
-            document.getElementById('section-blogger').classList.remove('hidden');
-            document.getElementById('nav-blogger').classList.add('nav-active');
-            document.getElementById('nav-stats').classList.remove('nav-active');
-        } else {
-            document.getElementById('section-stats').classList.remove('hidden');
-            document.getElementById('section-blogger').classList.add('hidden');
-            document.getElementById('nav-stats').classList.add('nav-active');
-            document.getElementById('nav-blogger').classList.remove('nav-active');
+        function showTab(tabName) {
+            if (tabName === 'blogger') {
+                document.getElementById('section-stats').classList.add('hidden');
+                document.getElementById('section-blogger').classList.remove('hidden');
+                document.getElementById('nav-blogger').classList.add('nav-active');
+                document.getElementById('nav-stats').classList.remove('nav-active');
+            } else {
+                document.getElementById('section-stats').classList.remove('hidden');
+                document.getElementById('section-blogger').classList.add('hidden');
+                document.getElementById('nav-stats').classList.add('nav-active');
+                document.getElementById('nav-blogger').classList.remove('nav-active');
+            }
         }
-    }
 
-    // --- 5. STATISTIQUES (Gardé en local pour la performance) ---
-    function refreshRealStats() {
-        const stats = JSON.parse(localStorage.getItem('abbrand_stats')) || {};
-        const totalViews = localStorage.getItem('abrand_total_views') || 0;
+        function refreshRealStats() {
+            const stats = JSON.parse(localStorage.getItem('abrand_stats')) || {};
+            const totalViews = localStorage.getItem('abrand_total_views') || 0;
 
-        const display = document.getElementById('total-views-display');
-        if (display) display.innerText = totalViews;
+            const display = document.getElementById('total-views-display');
+            if (display) display.innerText = totalViews;
 
-        const perfContainer = document.getElementById('page-performance');
-        const pagesArray = Object.keys(stats);
+            const perfContainer = document.getElementById('page-performance');
+            const pagesArray = Object.keys(stats);
 
-        if (pagesArray.length === 0) {
-            if (perfContainer) perfContainer.innerHTML = "<p class='text-slate-500 italic py-10 text-center'>Aucune donnée reçue.</p>";
-        } else {
-            if (perfContainer) perfContainer.innerHTML = pagesArray.map(name => `
+            if (pagesArray.length === 0) {
+                if (perfContainer) perfContainer.innerHTML = "<p class='text-slate-500 italic py-10 text-center'>Aucune donnée reçue.</p>";
+            } else {
+                if (perfContainer) perfContainer.innerHTML = pagesArray.map(name => `
                 <div class="flex flex-col md:flex-row justify-between items-center border-b border-white/5 pb-4 gap-4 fade-in text-white">
                     <div class="w-full md:w-1/3">
                         <p class="font-bold text-[#FF8200] text-lg">${name}</p>
@@ -443,23 +414,24 @@
                         <div class="text-center"><p class="text-[9px] text-slate-500 uppercase font-black">Vues</p><p class="font-bold text-xl">${stats[name].views}</p></div>
                         <div class="text-center"><p class="text-[9px] text-slate-500 uppercase font-black">Vitesse</p><p class="font-bold text-blue-400 font-mono">${stats[name].load}s</p></div>
                     </div>
-                </div>`).join('');
+                </div>
+            `).join('');
+            }
+
+            const logContainer = document.getElementById('activity-logs');
+            if (logContainer) {
+                const newLog = document.createElement('p');
+                newLog.className = "border-l-2 border-blue-500 pl-3 py-1 bg-white/5 text-slate-400 mb-2 fade-in";
+                newLog.innerText = `${new Date().toLocaleTimeString()} - Sync OK`;
+                logContainer.prepend(newLog);
+                if (logContainer.children.length > 6) logContainer.lastChild.remove();
+            }
         }
 
-        const logContainer = document.getElementById('activity-logs');
-        if (logContainer) {
-            const newLog = document.createElement('p');
-            newLog.className = "border-l-2 border-blue-500 pl-3 py-1 bg-white/5 text-slate-400 mb-2 fade-in";
-            newLog.innerText = `${new Date().toLocaleTimeString()} - Sync Supabase OK`;
-            logContainer.prepend(newLog);
-            if (logContainer.children.length > 6) logContainer.lastChild.remove();
-        }
-    }
-
-    setInterval(refreshRealStats, 5000);
-    refreshRealStats();
-    lucide.createIcons();
-</script>
+        setInterval(refreshRealStats, 3000);
+        refreshRealStats();
+        lucide.createIcons();
+    </script>
 </body>
 
 </html>
