@@ -8,59 +8,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #020617;
-            color: #f8fafc;
-        }
-
-        .glass {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .input-edit {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: white;
-            width: 100%;
-            border-radius: 8px;
-            padding: 10px;
-            outline: none;
-        }
-
-        .input-edit:focus {
-            border-color: #FF8200;
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .seo-badge {
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .seo-badge:hover {
-            filter: brightness(1.2);
-            scale: 1.05;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #f8fafc; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .input-edit { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); color: white; width: 100%; border-radius: 8px; padding: 10px; outline: none; }
+        .input-edit:focus { border-color: #FF8200; }
+        .fade-in { animation: fadeIn 0.5s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .seo-badge { cursor: pointer; transition: 0.3s; }
+        .seo-badge:hover { filter: brightness(1.2); scale: 1.05; }
     </style>
 </head>
 
@@ -69,21 +27,22 @@
     <div class="max-w-6xl mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
             <div>
-                <h1 class="text-4xl font-black uppercase italic">Vérification <span class="text-orange-500">SEO &
-                        Texte</span></h1>
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Analysez et optimisez avant
-                    publication</p>
+                <h1 class="text-4xl font-black uppercase italic">Vérification <span class="text-orange-500">SEO & Texte</span></h1>
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2">Gestion Cloud via Supabase</p>
 
-                <button onclick="clearAllPublished()"
-                    class="mt-4 bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
-                    <i data-lucide="trash-2" class="w-3 h-3"></i> Vider le site public (index.html)
-                </button>
+                <div class="flex gap-2 mt-4">
+                    <button onclick="window.location.href='index4.html'" class="bg-white/10 text-white px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-white/20 transition-all flex items-center gap-2">
+                        <i data-lucide="arrow-left" class="w-3 h-3"></i> Retour Dashboard
+                    </button>
+                    <button onclick="clearAllPublished()" class="bg-red-500/10 text-red-500 border border-red-500/20 px-4 py-2 rounded-lg text-[10px] font-black uppercase hover:bg-red-500 hover:text-white transition-all flex items-center gap-2">
+                        <i data-lucide="trash-2" class="w-3 h-3"></i> Vider la base publique
+                    </button>
+                </div>
             </div>
 
             <div class="glass px-8 py-4 rounded-2xl text-center border border-orange-500/20">
-                <p id="stat-pending" class="text-3xl font-black text-orange-500">0</p>
-                <p class="text-[10px] font-bold text-slate-400 uppercase italic tracking-tighter">En attente de
-                    validation</p>
+                <p id="stat-pending" class="text-3xl font-black text-orange-500">...</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase italic tracking-tighter">En attente (Cloud)</p>
             </div>
         </header>
 
@@ -91,52 +50,51 @@
 
         <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 opacity-30">
             <i data-lucide="check-circle" class="w-16 h-16 mb-4 text-green-500"></i>
-            <p class="font-bold uppercase tracking-widest text-sm">Aucun article à corriger.</p>
+            <p class="font-bold uppercase tracking-widest text-sm">Aucun article en attente.</p>
         </div>
     </div>
 
     <script>
-        let currentCount = 0;
+        // --- CONFIGURATION SUPABASE ---
+        const SUPABASE_URL = 'https://vyqmlovhdfxavrtoaupv.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cW1sb3ZoZGZ4YXZydG9hdXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjY5NTIsImV4cCI6MjA4NTE0Mjk1Mn0.fq_xqw7oqYpoDJ-52asq0awEgw6ybUlJqISFkmfq-IM';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- NOUVEAU : FONCTION DE RAPPORT DÉTAILLÉ ---
+        let currentCount = -1;
+
         function getSEOScore(title, content) {
             let score = 0;
             let report = [];
-            const words = content.trim().split(/\s+/).length;
+            const words = content ? content.trim().split(/\s+/).length : 0;
 
-            // 1. Longueur (Poids 40)
             if (words > 150) { score += 40; report.push("✅ Longueur : Excellente (" + words + " mots)"); }
             else if (words > 60) { score += 20; report.push("⚠️ Longueur : Passable, visez 150 mots."); }
             else { report.push("❌ Longueur : Trop courte pour Google."); }
 
-            // 2. Mots clés (Poids 30)
             const keywords = ["Côte d'Ivoire", "Abidjan", "Abrand", "Afrique"];
-            let found = keywords.filter(k => content.toLowerCase().includes(k.toLowerCase()));
+            let found = keywords.filter(k => content && content.toLowerCase().includes(k.toLowerCase()));
             score += (found.length * 7.5);
-            report.push(found.length > 0 ? "✅ Mots-clés trouvés : " + found.join(", ") : "❌ Aucun mot-clé stratégique détecté.");
+            report.push(found.length > 0 ? "✅ Mots-clés : " + found.join(", ") : "❌ Aucun mot-clé stratégique.");
 
-            // 3. Titre (Poids 30)
-            if (title.length > 30) { score += 30; report.push("✅ Titre : Bien structuré."); }
-            else { report.push("⚠️ Titre : Trop court pour le SEO."); }
+            if (title && title.length > 30) { score += 30; report.push("✅ Titre : Bien structuré."); }
+            else { report.push("⚠️ Titre : Trop court."); }
 
             let color = score > 70 ? "text-green-500" : (score > 40 ? "text-orange-500" : "text-red-500");
             return { score: Math.min(Math.round(score), 100), color, report };
         }
 
-        function showFullReport(title, content) {
-            const seo = getSEOScore(title, content);
-            Swal.fire({
-                title: 'Rapport SEO Pondéré',
-                html: `<div class='text-left text-sm space-y-2'>${seo.report.map(r => `<div>${r}</div>`).join('')}</div>`,
-                icon: seo.score > 50 ? 'success' : 'info'
-            });
-        }
+        async function loadQueue() {
+            const { data: pending, error } = await _supabase
+                .from('articles')
+                .select('*')
+                .eq('status', 'pending')
+                .order('created_at', { ascending: false });
 
-        function loadQueue() {
+            if (error) return console.error(error);
+
             const container = document.getElementById('admin-queue');
             const emptyState = document.getElementById('empty-state');
-            const pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-
+            
             document.getElementById('stat-pending').innerText = pending.length;
             currentCount = pending.length;
 
@@ -155,104 +113,92 @@
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aperçu Image</label>
-                                <span onclick="showFullReport(\`${art.title.replace(/'/g, "\\'")}\`, \`${art.content.replace(/'/g, "\\'")}\`)" 
-                                      class="seo-badge text-[10px] font-black px-2 py-0.5 rounded border border-white/10 ${seo.color}">
-                                    SEO: ${seo.score}% ⓘ
+                                <span class="seo-badge text-[10px] font-black px-2 py-0.5 rounded border border-white/10 ${seo.color}">
+                                    SEO: ${seo.score}%
                                 </span>
                             </div>
                             <div class="relative rounded-lg overflow-hidden mb-3 h-44 border border-white/10">
                                 <img src="${art.image}" class="w-full h-full object-cover">
                             </div>
-                            <input type="text" id="edit-image-${art.id}" value="${art.image}" class="input-edit text-[10px]" placeholder="Lien de l'image">
+                            <input type="text" id="edit-image-${art.id}" value="${art.image}" class="input-edit text-[10px]">
                         </div>
 
                         <div class="lg:col-span-2 flex flex-col gap-4">
                             <div>
-                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Titre de l'article</label>
+                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Titre</label>
                                 <input type="text" id="edit-title-${art.id}" value="${art.title}" class="input-edit font-bold text-lg">
                             </div>
                             <div>
-                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Contenu éditorial</label>
+                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Contenu</label>
                                 <textarea id="edit-content-${art.id}" rows="6" class="input-edit text-sm leading-relaxed">${art.content}</textarea>
                             </div>
 
                             <div class="flex gap-4 mt-2">
                                 <button onclick="approve(${art.id})" class="flex-1 bg-white text-black font-black py-4 rounded-xl uppercase text-xs hover:bg-green-500 transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="send" class="w-4 h-4"></i> Valider & Publier
+                                    <i data-lucide="check" class="w-4 h-4"></i> Valider & Publier
                                 </button>
                                 <button onclick="reject(${art.id})" class="bg-red-500/10 text-red-500 border border-red-500/20 px-6 rounded-xl hover:bg-red-500 hover:text-white transition-all">
-                                    <i data-lucide="x-circle" class="w-5 h-5"></i>
+                                    <i data-lucide="trash" class="w-5 h-5"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </div>
-            `}).join('');
+                </div>`;
+            }).join('');
             lucide.createIcons();
         }
 
-        function approve(id) {
+        async function approve(id) {
             const title = document.getElementById(`edit-title-${id}`).value;
             const content = document.getElementById(`edit-content-${id}`).value;
-            const seo = getSEOScore(title, content);
+            const image = document.getElementById(`edit-image-${id}`).value;
 
-            Swal.fire({
-                title: 'Publier cet article ?',
-                html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b></p>`,
-                icon: 'question',
+            const { error } = await _supabase
+                .from('articles')
+                .update({ 
+                    title, 
+                    content, 
+                    image, 
+                    status: 'published',
+                    created_at: new Date() // On actualise la date de publication
+                })
+                .eq('id', id);
+
+            if (!error) {
+                Swal.fire({ icon: 'success', title: 'Article publié !', timer: 1500, showConfirmButton: false });
+                loadQueue();
+            } else {
+                Swal.fire('Erreur', error.message, 'error');
+            }
+        }
+
+        async function reject(id) {
+            const { error } = await _supabase.from('articles').delete().eq('id', id);
+            if (!error) {
+                loadQueue();
+                Swal.fire('Supprimé', 'L\'article a été retiré de la file.', 'success');
+            }
+        }
+
+        async function clearAllPublished() {
+            const { value: confirm } = await Swal.fire({
+                title: 'Vider tout le site ?',
+                text: "Cela supprimera TOUS les articles publiés !",
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#22c55e',
-                confirmButtonText: 'Oui, publier !'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-                    let posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
-                    const index = pending.findIndex(a => a.id === id);
-
-                    if (index > -1) {
-                        const article = pending[index];
-                        article.title = title;
-                        article.content = content;
-                        article.image = document.getElementById(`edit-image-${id}`).value;
-                        article.date = new Date().toLocaleDateString('fr-FR');
-
-                        posts.unshift(article);
-                        pending.splice(index, 1);
-                        localStorage.setItem('abrand_posts', JSON.stringify(posts));
-                        localStorage.setItem('abrand_pending', JSON.stringify(pending));
-                        loadQueue();
-                        Swal.fire({ icon: 'success', title: 'En ligne !', timer: 1500, showConfirmButton: false });
-                    }
-                }
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Oui, tout supprimer'
             });
+
+            if (confirm) {
+                const { error } = await _supabase.from('articles').delete().eq('status', 'published');
+                if (!error) Swal.fire('Nettoyé !', 'Le site est vide.', 'success');
+            }
         }
 
-        function reject(id) {
-            Swal.fire({ title: 'Supprimer ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' }).then((result) => {
-                if (result.isConfirmed) {
-                    let pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-                    localStorage.setItem('abrand_pending', JSON.stringify(pending.filter(a => a.id !== id)));
-                    loadQueue();
-                }
-            });
-        }
-
-        function clearAllPublished() {
-            Swal.fire({ title: 'Vider le site ?', icon: 'warning', showCancelButton: true }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('abrand_posts');
-                    Swal.fire('Nettoyé !', '', 'success');
-                }
-            });
-        }
-
-        setInterval(() => {
-            const pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-            if (pending.length !== currentCount) loadQueue();
-        }, 2000);
-
-        window.onload = () => { loadQueue(); lucide.createIcons(); };
+        // Rafraîchissement automatique toutes les 5 secondes
+        setInterval(loadQueue, 5000);
+        window.onload = loadQueue;
     </script>
 </body>
-
 </html>
