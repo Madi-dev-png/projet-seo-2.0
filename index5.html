@@ -7,6 +7,7 @@
     <title>Contrôle Admin | Abrand News CI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
@@ -96,163 +97,177 @@
     </div>
 
     <script>
-        let currentCount = 0;
+    // --- 1. CONFIGURATION SUPABASE ---
+    const SUPABASE_URL = 'https://vyqmlovhdfxavrtoaupv.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cW1sb3ZoZGZ4YXZydG9hdXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjY5NTIsImV4cCI6MjA4NTE0Mjk1Mn0.fq_xqw7oqYpoDJ-52asq0awEgw6ybUlJqISFkmfq-IM';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- NOUVEAU : FONCTION DE RAPPORT DÉTAILLÉ ---
-        function getSEOScore(title, content) {
-            let score = 0;
-            let report = [];
-            const words = content.trim().split(/\s+/).length;
+    let currentCount = 0;
 
-            // 1. Longueur (Poids 40)
-            if (words > 150) { score += 40; report.push("✅ Longueur : Excellente (" + words + " mots)"); }
-            else if (words > 60) { score += 20; report.push("⚠️ Longueur : Passable, visez 150 mots."); }
-            else { report.push("❌ Longueur : Trop courte pour Google."); }
+    // --- 2. TON SYSTÈME SEO DÉTAILLÉ (CONSERVÉ) ---
+    function getSEOScore(title, content) {
+        let score = 0;
+        let report = [];
+        const words = content.trim().split(/\s+/).length;
 
-            // 2. Mots clés (Poids 30)
-            const keywords = ["Côte d'Ivoire", "Abidjan", "Abrand", "Afrique"];
-            let found = keywords.filter(k => content.toLowerCase().includes(k.toLowerCase()));
-            score += (found.length * 7.5);
-            report.push(found.length > 0 ? "✅ Mots-clés trouvés : " + found.join(", ") : "❌ Aucun mot-clé stratégique détecté.");
+        if (words > 150) { score += 40; report.push("✅ Longueur : Excellente (" + words + " mots)"); }
+        else if (words > 60) { score += 20; report.push("⚠️ Longueur : Passable, visez 150 mots."); }
+        else { report.push("❌ Longueur : Trop courte pour Google."); }
 
-            // 3. Titre (Poids 30)
-            if (title.length > 30) { score += 30; report.push("✅ Titre : Bien structuré."); }
-            else { report.push("⚠️ Titre : Trop court pour le SEO."); }
+        const keywords = ["Côte d'Ivoire", "Abidjan", "Abrand", "Afrique"];
+        let found = keywords.filter(k => content.toLowerCase().includes(k.toLowerCase()));
+        score += (found.length * 7.5);
+        report.push(found.length > 0 ? "✅ Mots-clés trouvés : " + found.join(", ") : "❌ Aucun mot-clé stratégique détecté.");
 
-            let color = score > 70 ? "text-green-500" : (score > 40 ? "text-orange-500" : "text-red-500");
-            return { score: Math.min(Math.round(score), 100), color, report };
+        if (title.length > 30) { score += 30; report.push("✅ Titre : Bien structuré."); }
+        else { report.push("⚠️ Titre : Trop court pour le SEO."); }
+
+        let color = score > 70 ? "text-green-500" : (score > 40 ? "text-orange-500" : "text-red-500");
+        return { score: Math.min(Math.round(score), 100), color, report };
+    }
+
+    function showFullReport(title, content) {
+        const seo = getSEOScore(title, content);
+        Swal.fire({
+            title: 'Rapport SEO Pondéré',
+            html: `<div class='text-left text-sm space-y-2'>${seo.report.map(r => `<div>${r}</div>`).join('')}</div>`,
+            icon: seo.score > 50 ? 'success' : 'info'
+        });
+    }
+
+    // --- 3. CHARGEMENT DE LA FILE D'ATTENTE DEPUIS SUPABASE ---
+    async function loadQueue() {
+        const container = document.getElementById('admin-queue');
+        const emptyState = document.getElementById('empty-state');
+
+        // On récupère les articles 'pending'
+        const { data: pending, error } = await _supabase
+            .from('articles')
+            .select('*')
+            .eq('status', 'pending')
+            .order('id', { ascending: false });
+
+        if (error) return console.error(error);
+
+        document.getElementById('stat-pending').innerText = pending.length;
+        currentCount = pending.length;
+
+        if (pending.length === 0) {
+            container.innerHTML = "";
+            emptyState.classList.remove('hidden');
+            return;
         }
 
-        function showFullReport(title, content) {
-            const seo = getSEOScore(title, content);
-            Swal.fire({
-                title: 'Rapport SEO Pondéré',
-                html: `<div class='text-left text-sm space-y-2'>${seo.report.map(r => `<div>${r}</div>`).join('')}</div>`,
-                icon: seo.score > 50 ? 'success' : 'info'
-            });
-        }
+        emptyState.classList.add('hidden');
+        container.innerHTML = pending.map(art => {
+            const seo = getSEOScore(art.title, art.content);
+            return `
+            <div class="glass rounded-2xl p-6 border-l-4 border-orange-500 fade-in mb-6">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aperçu Image</label>
+                            <span onclick="showFullReport(\`${art.title.replace(/'/g, "\\'")}\`, \`${art.content.replace(/'/g, "\\'")}\`)" 
+                                  class="seo-badge cursor-pointer text-[10px] font-black px-2 py-0.5 rounded border border-white/10 ${seo.color}">
+                                SEO: ${seo.score}% ⓘ
+                            </span>
+                        </div>
+                        <div class="relative rounded-lg overflow-hidden mb-3 h-44 border border-white/10">
+                            <img src="${art.image}" class="w-full h-full object-cover">
+                        </div>
+                        <input type="text" id="edit-image-${art.id}" value="${art.image}" class="input-edit text-[10px]" placeholder="Lien de l'image">
+                    </div>
 
-        function loadQueue() {
-            const container = document.getElementById('admin-queue');
-            const emptyState = document.getElementById('empty-state');
-            const pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-
-            document.getElementById('stat-pending').innerText = pending.length;
-            currentCount = pending.length;
-
-            if (pending.length === 0) {
-                container.innerHTML = "";
-                emptyState.classList.remove('hidden');
-                return;
-            }
-
-            emptyState.classList.add('hidden');
-            container.innerHTML = pending.map(art => {
-                const seo = getSEOScore(art.title, art.content);
-                return `
-                <div class="glass rounded-2xl p-6 border-l-4 border-orange-500 fade-in mb-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 flex flex-col gap-4">
                         <div>
-                            <div class="flex justify-between items-center mb-2">
-                                <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aperçu Image</label>
-                                <span onclick="showFullReport(\`${art.title.replace(/'/g, "\\'")}\`, \`${art.content.replace(/'/g, "\\'")}\`)" 
-                                      class="seo-badge text-[10px] font-black px-2 py-0.5 rounded border border-white/10 ${seo.color}">
-                                    SEO: ${seo.score}% ⓘ
-                                </span>
-                            </div>
-                            <div class="relative rounded-lg overflow-hidden mb-3 h-44 border border-white/10">
-                                <img src="${art.image}" class="w-full h-full object-cover">
-                            </div>
-                            <input type="text" id="edit-image-${art.id}" value="${art.image}" class="input-edit text-[10px]" placeholder="Lien de l'image">
+                            <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Titre de l'article</label>
+                            <input type="text" id="edit-title-${art.id}" value="${art.title}" class="input-edit font-bold text-lg">
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Contenu éditorial</label>
+                            <textarea id="edit-content-${art.id}" rows="6" class="input-edit text-sm leading-relaxed">${art.content}</textarea>
                         </div>
 
-                        <div class="lg:col-span-2 flex flex-col gap-4">
-                            <div>
-                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Titre de l'article</label>
-                                <input type="text" id="edit-title-${art.id}" value="${art.title}" class="input-edit font-bold text-lg">
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Contenu éditorial</label>
-                                <textarea id="edit-content-${art.id}" rows="6" class="input-edit text-sm leading-relaxed">${art.content}</textarea>
-                            </div>
-
-                            <div class="flex gap-4 mt-2">
-                                <button onclick="approve(${art.id})" class="flex-1 bg-white text-black font-black py-4 rounded-xl uppercase text-xs hover:bg-green-500 transition-all flex items-center justify-center gap-2">
-                                    <i data-lucide="send" class="w-4 h-4"></i> Valider & Publier
-                                </button>
-                                <button onclick="reject(${art.id})" class="bg-red-500/10 text-red-500 border border-red-500/20 px-6 rounded-xl hover:bg-red-500 hover:text-white transition-all">
-                                    <i data-lucide="x-circle" class="w-5 h-5"></i>
-                                </button>
-                            </div>
+                        <div class="flex gap-4 mt-2">
+                            <button onclick="approve(${art.id})" class="flex-1 bg-white text-black font-black py-4 rounded-xl uppercase text-xs hover:bg-green-500 transition-all flex items-center justify-center gap-2">
+                                <i data-lucide="send" class="w-4 h-4"></i> Valider & Publier
+                            </button>
+                            <button onclick="reject(${art.id})" class="bg-red-500/10 text-red-500 border border-red-500/20 px-6 rounded-xl hover:bg-red-500 hover:text-white transition-all">
+                                <i data-lucide="x-circle" class="w-5 h-5"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
-            `}).join('');
-            lucide.createIcons();
+            </div>`;
+        }).join('');
+        lucide.createIcons();
+    }
+
+    // --- 4. APPROBATION (PASSAGE EN 'published') ---
+    async function approve(id) {
+        const title = document.getElementById(`edit-title-${id}`).value;
+        const content = document.getElementById(`edit-content-${id}`).value;
+        const image = document.getElementById(`edit-image-${id}`).value;
+        const seo = getSEOScore(title, content);
+
+        const result = await Swal.fire({
+            title: 'Publier cet article ?',
+            html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b></p>`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#22c55e',
+            confirmButtonText: 'Oui, publier !'
+        });
+
+        if (result.isConfirmed) {
+            const { error } = await _supabase
+                .from('articles')
+                .update({ 
+                    title: title, 
+                    content: content, 
+                    image: image, 
+                    status: 'published',
+                    created_at: new Date() 
+                })
+                .eq('id', id);
+
+            if (!error) {
+                loadQueue();
+                Swal.fire({ icon: 'success', title: 'En ligne sur Abrand News !', timer: 1500, showConfirmButton: false });
+            }
         }
+    }
 
-        function approve(id) {
-            const title = document.getElementById(`edit-title-${id}`).value;
-            const content = document.getElementById(`edit-content-${id}`).value;
-            const seo = getSEOScore(title, content);
+    // --- 5. REJET (SUPPRESSION) ---
+    async function reject(id) {
+        const result = await Swal.fire({ 
+            title: 'Supprimer définitivement ?', 
+            text: "Cette action est irréversible.",
+            icon: 'warning', 
+            showCancelButton: true, 
+            confirmButtonColor: '#ef4444' 
+        });
 
-            Swal.fire({
-                title: 'Publier cet article ?',
-                html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b></p>`,
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#22c55e',
-                confirmButtonText: 'Oui, publier !'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    let pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-                    let posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
-                    const index = pending.findIndex(a => a.id === id);
-
-                    if (index > -1) {
-                        const article = pending[index];
-                        article.title = title;
-                        article.content = content;
-                        article.image = document.getElementById(`edit-image-${id}`).value;
-                        article.date = new Date().toLocaleDateString('fr-FR');
-
-                        posts.unshift(article);
-                        pending.splice(index, 1);
-                        localStorage.setItem('abrand_posts', JSON.stringify(posts));
-                        localStorage.setItem('abrand_pending', JSON.stringify(pending));
-                        loadQueue();
-                        Swal.fire({ icon: 'success', title: 'En ligne !', timer: 1500, showConfirmButton: false });
-                    }
-                }
-            });
+        if (result.isConfirmed) {
+            const { error } = await _supabase.from('articles').delete().eq('id', id);
+            if (!error) loadQueue();
         }
+    }
 
-        function reject(id) {
-            Swal.fire({ title: 'Supprimer ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' }).then((result) => {
-                if (result.isConfirmed) {
-                    let pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-                    localStorage.setItem('abrand_pending', JSON.stringify(pending.filter(a => a.id !== id)));
-                    loadQueue();
-                }
-            });
+    // --- 6. NETTOYAGE COMPLET (OPTIONNEL) ---
+    async function clearAllPublished() {
+        const result = await Swal.fire({ title: 'Vider tout le site ?', icon: 'warning', showCancelButton: true });
+        if (result.isConfirmed) {
+            const { error } = await _supabase.from('articles').delete().eq('status', 'published');
+            if (!error) Swal.fire('Site vidé !', '', 'success');
         }
+    }
 
-        function clearAllPublished() {
-            Swal.fire({ title: 'Vider le site ?', icon: 'warning', showCancelButton: true }).then((result) => {
-                if (result.isConfirmed) {
-                    localStorage.removeItem('abrand_posts');
-                    Swal.fire('Nettoyé !', '', 'success');
-                }
-            });
-        }
+    // Rafraîchissement automatique toutes les 5 secondes
+    setInterval(loadQueue, 5000);
 
-        setInterval(() => {
-            const pending = JSON.parse(localStorage.getItem('abrand_pending')) || [];
-            if (pending.length !== currentCount) loadQueue();
-        }, 2000);
-
-        window.onload = () => { loadQueue(); lucide.createIcons(); };
-    </script>
+    window.onload = () => { loadQueue(); lucide.createIcons(); };
+</script>
 </body>
 
 </html>

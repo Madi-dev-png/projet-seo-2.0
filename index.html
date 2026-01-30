@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Abrand News CI | Portail d'Actualité Dynamique</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;700;900&display=swap"
         rel="stylesheet">
@@ -241,95 +242,104 @@
         </div>
     </footer>
 
-    <script>
-        // --- A. INITIALISATION DATE ---
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date-now').innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
+   <script>
+    // --- 1. CONFIGURATION SUPABASE (Toujours en premier) ---
+    const SUPABASE_URL = 'https://vyqmlovhdfxavrtoaupv.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cW1sb3ZoZGZ4YXZydG9hdXB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk1NjY5NTIsImV4cCI6MjA4NTE0Mjk1Mn0.fq_xqw7oqYpoDJ-52asq0awEgw6ybUlJqISFkmfq-IM';
+    const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // --- B. SIMULATION SCANNER (NEWS SOURCES) ---
-        const newsSources = [
-            { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
-            { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
-            { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
-            { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
-            { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
-            { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
-            { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
-        ];
+    // --- A. INITIALISATION DATE ---
+    const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('date-now').innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
 
-        function refreshNews() {
-            const list = document.getElementById('dynamic-news-list');
-            const ticker = document.getElementById('live-news-ticker');
-            if (!list || !ticker) return;
+    // --- B. SIMULATION SCANNER (TES SOURCES ORIGINALES) ---
+    const newsSources = [
+        { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
+        { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
+        { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
+        { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
+        { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
+        { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
+        { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
+    ];
 
-            list.innerHTML = `<div class="animate-pulse flex space-x-4"><div class="flex-1 space-y-4 py-1"><div class="h-4 bg-gray-200 rounded w-3/4"></div></div></div>`;
+    function refreshNews() {
+        const list = document.getElementById('dynamic-news-list');
+        const ticker = document.getElementById('live-news-ticker');
+        if (!list || !ticker) return;
 
-            setTimeout(() => {
-                list.innerHTML = "";
-                const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
-                let tickerContent = "";
-                shuffled.forEach(news => {
-                    list.innerHTML += `
-                    <div class="group cursor-pointer border-b border-gray-200 pb-4">
-                        <span class="text-[10px] font-black text-orange-600 uppercase">${news.cat}</span>
-                        <h4 class="font-bold text-sm leading-tight group-hover:text-blue-600 transition">${news.title}</h4>
-                    </div>`;
-                    tickerContent += `${news.cat} : ${news.title} • `;
-                });
-                ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
-            }, 1500);
+        list.innerHTML = `<div class="animate-pulse flex space-x-4"><div class="flex-1 space-y-4 py-1"><div class="h-4 bg-gray-200 rounded w-3/4"></div></div></div>`;
+
+        setTimeout(() => {
+            list.innerHTML = "";
+            const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
+            let tickerContent = "";
+            shuffled.forEach(news => {
+                list.innerHTML += `
+                <div class="group cursor-pointer border-b border-gray-200 pb-4">
+                    <span class="text-[10px] font-black text-orange-600 uppercase">${news.cat}</span>
+                    <h4 class="font-bold text-sm leading-tight group-hover:text-blue-600 transition">${news.title}</h4>
+                </div>`;
+                tickerContent += `${news.cat} : ${news.title} • `;
+            });
+            ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
+        }, 1500);
+    }
+
+    // --- C. CHARGEMENT DYNAMIQUE DEPUIS SUPABASE ---
+    async function displayArticles() {
+        const container = document.getElementById('articles-container');
+        if (!container) return;
+
+        // On récupère les articles 'published' depuis ta table Supabase
+        const { data: posts, error } = await _supabase
+            .from('articles')
+            .select('*')
+            .eq('status', 'published') 
+            .order('id', { ascending: false });
+
+        if (error) {
+            console.error("Erreur de chargement:", error);
+            return;
         }
 
-        // --- C. CHARGEMENT DYNAMIQUE DES ARTICLES ADMIN ---
-        function displayArticles() {
-            const container = document.getElementById('articles-container');
-            if (!container) return;
+        if (!posts || posts.length === 0) {
+            container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
+            return;
+        }
 
-            const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
-
-            if (posts.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
-                return;
-            }
-
-            container.innerHTML = posts.map(post => `
+        container.innerHTML = posts.map(post => `
             <article class="news-card group cursor-pointer border-b lg:border-none pb-6">
                 <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
                     <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                     <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
                 </div>
-                <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.date}</p>
+                <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.created_at ? new Date(post.created_at).toLocaleDateString('fr-FR') : 'Récent'}</p>
                 <h3 class="serif text-2xl font-bold leading-tight group-hover:text-blue-600 transition">${post.title}</h3>
-                <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.substring(0, 120)}...</p>
+                <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.replace(/<[^>]*>/g, '').substring(0, 120)}...</p>
                 <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
             </article>
         `).join('');
-        }
+    }
 
-        // --- D. GESTION DES RECHERCHES ---
-        function searchWeb() {
-            const q = document.getElementById('search-bar').value;
-            if (q.trim() !== "") alert("Recherche SEO : " + q);
-        }
+    // --- D. GESTION DES RECHERCHES ---
+    function searchWeb() {
+        const q = document.getElementById('search-bar').value;
+        if (q.trim() !== "") alert("Recherche SEO : " + q);
+    }
 
-        // --- E. LANCEMENT ET ÉCOUTEURS TEMPS RÉEL ---
+    // --- E. LANCEMENT ET ÉCOUTEURS TEMPS RÉEL ---
+    window.onload = () => {
+        refreshNews();
+        displayArticles();
+    };
 
-        // Au chargement de la page
-        window.onload = () => {
-            refreshNews();
-            displayArticles();
-        };
+    // Rafraîchir les petites news toutes les 10 secondes
+    setInterval(refreshNews, 10000);
 
-        // Rafraîchir le flux news toutes les 10 secondes
-        setInterval(refreshNews, 10000);
-
-        // DÉTECTION INSTANTANÉE : Si tu publies dans l'admin, ça apparaît ici sans F5
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'abrand_posts') {
-                displayArticles();
-            }
-        });
-    </script>
+    // Rafraîchir les gros articles toutes les 60 secondes (pour voir les validations admin)
+    setInterval(displayArticles, 60000);
+</script>
 
 </body>
 
