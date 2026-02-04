@@ -325,10 +325,15 @@
                         </div>
                     </div>
 
-                    <button onclick="publish()"
-                        class="w-full mt-6 bg-[#FF8200] text-black font-black py-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform">
-                        <i data-lucide="send" class="w-4"></i> Publier l'article
-                    </button>
+                   <div class="flex flex-col md:flex-row gap-4 mt-8">
+    <button type="button" onclick="addSection()" class="flex-1 bg-white/10 border border-white/20 text-white font-black py-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 hover:bg-white/20 transition">
+        <i data-lucide="plus-circle" class="w-4"></i> Ajouter une section
+    </button>
+    
+    <button onclick="publish()" class="flex-[2] bg-[#FF8200] text-black font-black py-4 rounded-xl uppercase text-xs flex items-center justify-center gap-2 hover:scale-[1.02] transition-transform shadow-lg shadow-orange-500/20">
+        <i data-lucide="send" class="w-4"></i> Publier l'article complet
+    </button>
+</div>
                 </div>
             </div>
         </div>
