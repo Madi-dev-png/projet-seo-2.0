@@ -55,12 +55,14 @@
             flex-direction: column;
             border-right: 1px solid #ddd;
             z-index: 100;
+            transition: transform 0.3s ease;
         }
 
         .main-container {
             margin-left: 280px;
             width: 100%;
             padding: 2rem;
+            transition: margin-left 0.3s ease;
         }
 
         .nav-item {
@@ -126,13 +128,20 @@
             color: #000;
         }
 
+        /* RESPONSIVE ADDITIONS */
         @media (max-width: 1024px) {
             .sidebar {
-                display: none;
+                transform: translateX(-100%);
             }
-
+            .sidebar.active {
+                transform: translateX(0);
+            }
             .main-container {
                 margin-left: 0;
+                padding: 1rem;
+            }
+            #mobile-menu-btn {
+                display: block !important;
             }
         }
     </style>
@@ -141,9 +150,18 @@
 
 <body>
 
-    <aside class="sidebar flex flex-col">
-        <div class="p-4 flex items-center gap-2 text-[#0067b8] font-bold border-b">
-            <span class="text-xl">:::</span> Compte Microsoft
+    <button id="mobile-menu-btn" onclick="toggleSidebar()" class="fixed top-4 right-4 z-[110] bg-slate-800 p-2 rounded-lg text-white hidden">
+        <i data-lucide="menu"></i>
+    </button>
+
+    <aside id="sidebar" class="sidebar flex flex-col">
+        <div class="p-4 flex items-center justify-between text-[#0067b8] font-bold border-b">
+            <div class="flex items-center gap-2">
+                <span class="text-xl">:::</span> Compte Microsoft
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden text-slate-500">
+                <i data-lucide="x"></i>
+            </button>
         </div>
 
         <div class="profile-section flex items-center gap-3">
@@ -157,8 +175,8 @@
         </div>
 
         <nav class="mt-4 flex-1">
-            <div onclick="showTab('stats')" id="nav-stats" class="nav-item nav-active">🏠 &nbsp; Compte</div>
-            <div onclick="showTab('blogger')" id="nav-blogger" class="nav-item">✍️ &nbsp; Rédiger un article</div>
+            <div onclick="showTab('stats'); toggleSidebar()" id="nav-stats" class="nav-item nav-active">🏠 &nbsp; Compte</div>
+            <div onclick="showTab('blogger'); toggleSidebar()" id="nav-blogger" class="nav-item">✍️ &nbsp; Rédiger un article</div>
             <div class="nav-item">👤 &nbsp; Vos informations</div>
             <div class="nav-item">📄 &nbsp; Abonnements</div>
             <div class="nav-item">💻 &nbsp; Appareils</div>
@@ -172,14 +190,14 @@
     <div class="main-container">
 
         <div id="section-stats">
-            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div>
                     <h1 class="text-3xl font-black tracking-tighter uppercase text-[#FF8200]">Abrand <span
                             class="text-white">Control Center</span></h1>
                     <p class="text-xs text-slate-400 font-bold uppercase tracking-[0.3em]">Surveillance SEO CI &
                         Performance 2026-2031</p>
                 </div>
-                <div class="flex gap-4">
+                <div class="flex flex-wrap gap-4">
                     <button onclick="localStorage.clear(); location.reload();"
                         class="text-[10px] border border-red-500/50 text-red-500 px-3 py-1 rounded hover:bg-red-500 hover:text-white transition">RESET
                         STATS</button>
@@ -194,7 +212,7 @@
                 </div>
             </div>
 
-            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div class="glass p-6 rounded-xl">
                     <p class="text-xs font-bold text-slate-400 uppercase">Vues Réelles (Session)</p>
                     <h2 id="total-views-display" class="text-4xl font-black mt-2 text-[#FF8200]">0</h2>
@@ -216,8 +234,8 @@
                     <p class="text-xs text-blue-400 mt-2 font-bold">● 6 en attente</p>
                 </div>
 
-                <div class="lg:col-span-3 glass p-8 rounded-xl">
-                    <h3 class="text-xl font-black mb-6 flex justify-between">
+                <div class="lg:col-span-3 glass p-6 md:p-8 rounded-xl overflow-x-auto">
+                    <h3 class="text-xl font-black mb-6 flex justify-between items-center">
                         Performance des Sections
                         <span class="text-[10px] bg-white/10 px-2 py-1 rounded tracking-widest uppercase">Données du
                             Navigateur</span>
@@ -231,108 +249,111 @@
                 </div>
             </div>
         </div>
-<div id="section-blogger" class="hidden fade-in max-w-7xl mx-auto p-4 space-y-6">
 
-    <div class="flex items-center justify-between ml-4">
-        <h2 class="text-3xl font-black uppercase tracking-tighter italic text-white">
-            Éditeur <span class="text-emerald-500">BLOGUEUR CI</span>
-        </h2>
-        <div class="flex gap-4">
-             <button type="button" onclick="addSection()" class="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
-                + Ajouter une section
-             </button>
-             <button onclick="publish()" class="bg-emerald-500 text-black px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 transition-all hover:scale-105">
-                Publier l'article
-             </button>
-        </div>
-    </div>
+        <div id="section-blogger" class="hidden fade-in max-w-7xl mx-auto space-y-6">
 
-    <div class="flex flex-col lg:flex-row gap-6">
-        
-        <div class="lg:w-1/3 space-y-6">
-            
-            <div class="glass bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Les mots clés</label>
-                        <input type="text" id="seo-keywords" placeholder="SEO, Journalisme..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Le Titre</label>
-                        <input type="text" id="article-title" placeholder="Titre de l'article" class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Meta Description</label>
-                        <input type="text" id="seo-meta" placeholder="Résumé pour Google..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
-                    </div>
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <h2 class="text-2xl md:text-3xl font-black uppercase tracking-tighter italic text-white leading-tight">
+                    Éditeur <span class="text-emerald-500">BLOGUEUR CI</span>
+                </h2>
+                <div class="flex flex-wrap gap-2">
+                     <button type="button" onclick="addSection()" class="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                        + Ajouter une section
+                     </button>
+                     <button onclick="publish()" class="bg-emerald-500 text-black px-6 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/20 transition-all hover:scale-105">
+                        Publier l'article
+                     </button>
                 </div>
             </div>
 
-            <div class="glass bg-white p-8 rounded-[2.5rem] shadow-xl border border-slate-100">
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Cible</label>
-                            <input type="text" id="seo-target" placeholder="Public" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Langue</label>
-                            <input type="text" id="seo-lang" placeholder="FR" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Auteur</label>
-                        <input type="text" id="seo-author" placeholder="Nom de l'auteur" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Zone Géographique</label>
-                        <input type="text" id="seo-geo" placeholder="Côte d'Ivoire" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="flex-1 space-y-6">
-            
-            <div class="glass bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-100">
-                
-                <div class="mb-8">
-                    <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-4">Liens internes et externes (Image URL)</label>
-                    <input type="text" id="article-image" placeholder="https://..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center px-4">
-                            <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Hiérarchie par section</label>
-                            <div class="flex gap-2">
-                                <button type="button" onclick="insertTag('H1')" class="h-btn bg-slate-900 text-white px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-emerald-500 transition-all shadow-md shadow-slate-200">H1</button>
-                                <button type="button" onclick="insertTag('H2')" class="h-btn bg-slate-900 text-white px-4 py-1.5 rounded-lg text-[10px] font-black hover:bg-emerald-500 transition-all shadow-md shadow-slate-200">H2</button>
+            <div class="flex flex-col lg:flex-row gap-6">
+                <div class="lg:w-1/3 space-y-6">
+                    <div class="glass bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-slate-100">
+                        <div class="space-y-4">
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Les mots clés</label>
+                                <input type="text" id="seo-keywords" placeholder="SEO..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Le Titre</label>
+                                <input type="text" id="article-title" placeholder="Titre..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Meta Description</label>
+                                <input type="text" id="seo-meta" placeholder="Résumé..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-5 py-4 text-slate-900 font-bold outline-none focus:ring-2 focus:ring-emerald-500/10">
                             </div>
                         </div>
-                        <textarea id="article-content" rows="8" placeholder="Contenu de l'article..." 
-                                  class="input-blogger w-full bg-slate-50 border-none rounded-[2rem] px-6 py-6 text-slate-900 font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500/10 outline-none transition-all shadow-inner"></textarea>
                     </div>
 
-                    <div class="space-y-3">
-                        <label class="text-[10px] font-black uppercase text-slate-400 mb-1 mt-1 block ml-4">Texte alternatif (ALT)</label>
-                        <textarea id="seo-alt" rows="8" placeholder="Description pour le SEO..." 
-                                  class="input-blogger w-full bg-slate-50 border-none rounded-[2rem] px-6 py-6 text-slate-900 font-medium focus:bg-white focus:ring-2 focus:ring-emerald-500/10 outline-none transition-all shadow-inner"></textarea>
+                    <div class="glass bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] shadow-xl border border-slate-100">
+                        <div class="grid grid-cols-1 gap-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Cible</label>
+                                    <input type="text" id="seo-target" placeholder="Public" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Langue</label>
+                                    <input type="text" id="seo-lang" placeholder="FR" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Auteur</label>
+                                <input type="text" id="seo-author" placeholder="Nom..." class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
+                            </div>
+                            <div>
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-2">Zone Géo</label>
+                                <input type="text" id="seo-geo" placeholder="CI" class="input-blogger w-full bg-slate-50 border-none rounded-xl px-4 py-3 text-slate-900 font-bold">
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="flex-1 space-y-6">
+                    <div class="glass bg-white p-6 md:p-8 rounded-[2rem] md:rounded-[3rem] shadow-2xl border border-slate-100">
+                        <div class="mb-8">
+                            <label class="text-[10px] font-black uppercase text-slate-400 mb-2 block ml-4">URL Image</label>
+                            <input type="text" id="article-image" placeholder="https://..." class="input-blogger w-full bg-slate-50 border-none rounded-2xl px-6 py-4 text-slate-900 font-bold outline-none">
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center px-4">
+                                    <label class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Hiérarchie</label>
+                                    <div class="flex gap-2">
+                                        <button type="button" onclick="insertTag('H1')" class="h-btn bg-slate-900 text-white px-3 py-1 rounded-lg">H1</button>
+                                        <button type="button" onclick="insertTag('H2')" class="h-btn bg-slate-900 text-white px-3 py-1 rounded-lg">H2</button>
+                                    </div>
+                                </div>
+                                <textarea id="article-content" rows="8" placeholder="Contenu..." 
+                                          class="input-blogger w-full bg-slate-50 border-none rounded-[1.5rem] px-6 py-6 text-slate-900 font-medium outline-none shadow-inner"></textarea>
+                            </div>
+
+                            <div class="space-y-3">
+                                <label class="text-[10px] font-black uppercase text-slate-400 mb-1 mt-1 block ml-4">ALT Image</label>
+                                <textarea id="seo-alt" rows="8" placeholder="ALT..." 
+                                          class="input-blogger w-full bg-slate-50 border-none rounded-[1.5rem] px-6 py-6 text-slate-900 font-medium outline-none shadow-inner"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="publish()" class="lg:hidden w-full bg-emerald-600 text-white font-black py-6 rounded-[2rem] uppercase text-xs tracking-[0.3em] shadow-xl">
+                        Publier l'article complet
+                    </button>
+                </div>
             </div>
-
-            <button onclick="publish()" class="lg:hidden w-full bg-emerald-600 text-white font-black py-6 rounded-[2rem] uppercase text-xs tracking-[0.3em] shadow-xl">
-                Publier l'article complet
-            </button>
         </div>
-
-    </div>
-</div>
 
     </div>
 
     <script>
+        // Fonction pour le menu mobile
+        function toggleSidebar() {
+            if (window.innerWidth <= 1024) {
+                document.getElementById('sidebar').classList.toggle('active');
+            }
+        }
+
         function insertTag(tag) {
             const area = document.getElementById('article-content');
             const start = area.selectionStart;
@@ -410,7 +431,7 @@
                 if (perfContainer) perfContainer.innerHTML = pagesArray.map(name => `
                 <div class="flex flex-col md:flex-row justify-between items-center border-b border-white/5 pb-4 gap-4 fade-in text-white">
                     <div class="w-full md:w-1/3">
-                        <p class="font-bold text-[#FF8200] text-lg">${name}</p>
+                        <p class="font-bold text-[#FF8200] text-lg truncate">${name}</p>
                         <p class="text-[9px] text-slate-400 font-bold uppercase italic">Màj: ${stats[name].lastUpdate}</p>
                     </div>
                     <div class="flex justify-between w-full md:w-2/3">
@@ -434,13 +455,13 @@
         setInterval(refreshRealStats, 3000);
         refreshRealStats();
         lucide.createIcons();
-        // Ce code vérifie si l'URL contient "role=blogger" au chargement
-window.addEventListener('DOMContentLoaded', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('role') === 'blogger') {
-        showTab('blogger'); // Ouvre automatiquement l'onglet de rédaction
-    }
-});
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('role') === 'blogger') {
+                showTab('blogger');
+            }
+        });
     </script>
 </body>
 
