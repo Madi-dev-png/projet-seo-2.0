@@ -78,10 +78,15 @@
                     class="border-b border-black text-xs px-2 focus:outline-none focus:w-48 transition-all">
                 <button onclick="searchWeb()">🔍</button>
             </div>
-            <button onclick="openModal('CRÉER UN COMPTE')" class="hover:text-orange-500">S'inscrire</button>
+            <button onclick="openModal('CRÉER UN COMPTE')" 
+    class="hover:text-orange-500 text-xs font-black uppercase tracking-tighter transition-all">
+    S'inscrire
+</button>
 
-            <button onclick="openModal('S\'ABONNER À LA NEWSLETTER')"
-                class="bg-[#FF8200] text-white px-4 py-1">S'abonner</button>
+<button onclick="openModal('S\'ABONNER À LA NEWSLETTER')"
+    class="bg-[#FF8200] text-white px-8 py-3 text-xs font-black uppercase tracking-widest hover:bg-black hover:scale-105 transition-all duration-300 shadow-lg">
+    S'abonner
+</button>
         </div>
     </div>
     <header class="max-w-7xl mx-auto py-12 text-center">
@@ -91,14 +96,89 @@
     </header>
     <nav class="max-w-7xl mx-auto mb-10 sticky top-0 bg-white z-50">
         <div
-            class="border-ci py-4 flex justify-center gap-6 md:gap-12 text-xs font-black uppercase tracking-tighter px-4 overflow-x-auto">
+            class="border-ci py-4 flex justify-center items-center gap-6 md:gap-12 text-xs font-black uppercase tracking-tighter px-4 overflow-x-auto">
             <a href="index2.html" class="hover:text-orange-500 transition">Politique</a>
             <a href="economie.html" class="hover:text-orange-500 transition">Économie</a>
             <a href="Tech & Innovation.html" class="hover:text-orange-500 transition">Tech & Innovation</a>
             <a href="#" class="hover:text-orange-500 transition">Écologie</a>
-            <a href="index3.html" class="text-blue-600 border-l pl-6 border-gray-300">✎ RÉDIGER UN ARTICLE</a>
+
+            <button onclick="openPortal()"
+                class="text-blue-600 border-l pl-6 border-gray-300 hover:text-orange-500 transition"
+                title="Portail de rédaction">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                    <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                    <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                </svg>
+            </button>
         </div>
     </nav>
+
+    <div id="portal-modal"
+        class="fixed inset-0 bg-white/95 z-[100] hidden flex flex-col items-center justify-center p-6">
+        <button onclick="closePortal()"
+            class="absolute top-8 left-8 text-3xl font-light hover:rotate-90 transition-transform">&times;</button>
+
+        <div id="portal-selection" class="w-full max-w-4xl">
+            <h2 class="serif text-4xl font-black mb-12 text-center uppercase tracking-tighter">Accès <span
+                    class="text-orange-500">Rédaction</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div onclick="showLoginForm('blogueur')"
+                    class="group cursor-pointer relative overflow-hidden h-80 flex items-center justify-center border border-gray-100 shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=800"
+                        class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110 group-hover:grayscale-0 grayscale">
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                    <h3 class="relative serif text-3xl text-white font-bold tracking-tight">Le Blogueur</h3>
+                </div>
+                <div onclick="showLoginForm('admin')"
+                    class="group cursor-pointer relative overflow-hidden h-80 flex items-center justify-center border border-gray-100 shadow-xl">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800"
+                        class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-110 group-hover:grayscale-0 grayscale">
+                    <div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition"></div>
+                    <h3 class="relative serif text-3xl text-white font-bold tracking-tight">Administrateur</h3>
+                </div>
+            </div>
+        </div>
+
+    <div id="portal-login" class="hidden w-full max-w-md bg-white p-10 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.2)] border border-[#AFAFAF]/20">
+    <div class="text-center mb-10">
+        <h3 id="login-title" class="serif text-4xl font-black uppercase tracking-tighter mb-2 text-slate-900">Connexion</h3>
+        <div class="h-1.5 w-16 bg-[#83A697] mx-auto"></div>
+        <p class="text-[10px] text-[#AFAFAF] uppercase tracking-[0.3em] mt-4 font-bold">Veuillez entrer vos accès éditeur</p>
+    </div>
+
+    <form onsubmit="handleLogin(event)" class="space-y-8">
+        <div class="relative group">
+            <input type="text" id="login-user" required 
+                class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
+            <label class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
+                Identifiant
+            </label>
+        </div>
+
+        <div class="relative group">
+            <input type="password" id="access-password" required 
+                class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
+            <label class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
+                Mot de passe
+            </label>
+        </div>
+
+        <div class="pt-4">
+            <button type="submit" class="w-full bg-[#FFB921] text-white py-5 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#83A697] transition-all duration-500 transform hover:-translate-y-1 shadow-lg">
+                Valider l'authentification
+            </button>
+        </div>
+
+        <button type="button" onclick="backToPortal()" class="w-full text-[10px] uppercase font-black text-[#AFAFAF] hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+            <span class="text-lg">←</span> Retour aux profils
+        </button>
+    </form>
+</div>
+    </div>
+
 
     <main class="max-w-7xl mx-auto px-6 pb-20">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
@@ -245,141 +325,149 @@
 
     <script>
         // --- A. INITIALISATION DATE ---
-        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        document.getElementById('date-now').innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
+const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const dateElement = document.getElementById('date-now');
+if (dateElement) dateElement.innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
 
-        // --- B. SIMULATION SCANNER (NEWS SOURCES) ---
-        const newsSources = [
-            { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
-            { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
-            { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
-            { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
-            { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
-            { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
-            { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
-        ];
+// --- B. SIMULATION SCANNER (NEWS SOURCES) ---
+const newsSources = [
+    { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
+    { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
+    { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
+    { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
+    { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
+    { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
+    { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
+];
 
-        function refreshNews() {
-            const list = document.getElementById('dynamic-news-list');
-            const ticker = document.getElementById('live-news-ticker');
-            if (!list || !ticker) return;
+function refreshNews() {
+    const list = document.getElementById('dynamic-news-list');
+    const ticker = document.getElementById('live-news-ticker');
+    if (!list || !ticker) return;
 
-            list.innerHTML = `<div class="animate-pulse flex space-x-4"><div class="flex-1 space-y-4 py-1"><div class="h-4 bg-gray-200 rounded w-3/4"></div></div></div>`;
+    const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
+    let tickerContent = "";
+    list.innerHTML = "";
+    shuffled.forEach(news => {
+        list.innerHTML += `
+        <div class="group cursor-pointer border-b border-gray-200 pb-4">
+            <span class="text-[10px] font-black text-orange-600 uppercase">${news.cat}</span>
+            <h4 class="font-bold text-sm leading-tight group-hover:text-blue-600 transition">${news.title}</h4>
+        </div>`;
+        tickerContent += `${news.cat} : ${news.title} • `;
+    });
+    ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
+}
 
-            setTimeout(() => {
-                list.innerHTML = "";
-                const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
-                let tickerContent = "";
-                shuffled.forEach(news => {
-                    list.innerHTML += `
-                    <div class="group cursor-pointer border-b border-gray-200 pb-4">
-                        <span class="text-[10px] font-black text-orange-600 uppercase">${news.cat}</span>
-                        <h4 class="font-bold text-sm leading-tight group-hover:text-blue-600 transition">${news.title}</h4>
-                    </div>`;
-                    tickerContent += `${news.cat} : ${news.title} • `;
-                });
-                ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
-            }, 1500);
+// --- C. CHARGEMENT DYNAMIQUE DES ARTICLES ---
+function displayArticles() {
+    const container = document.getElementById('articles-container');
+    if (!container) return;
+    const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
+    if (posts.length === 0) {
+        container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
+        return;
+    }
+    container.innerHTML = posts.map(post => `
+        <article class="news-card group cursor-pointer border-b lg:border-none pb-6">
+            <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
+                <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
+            </div>
+            <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.date}</p>
+            <h3 class="serif text-2xl font-bold leading-tight group-hover:text-blue-600 transition">${post.title}</h3>
+            <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.substring(0, 120)}...</p>
+            <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
+        </article>
+    `).join('');
+}
+
+// --- D. GESTION DU PORTAIL (CONNEXION) ---
+let currentRole = "";
+
+function openPortal() {
+    document.getElementById('portal-modal').classList.remove('hidden');
+    document.getElementById('portal-selection').classList.remove('hidden');
+    document.getElementById('portal-login').classList.add('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closePortal() {
+    document.getElementById('portal-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function showLoginForm(role) {
+    currentRole = role;
+    document.getElementById('portal-selection').classList.add('hidden');
+    document.getElementById('portal-login').classList.remove('hidden');
+    document.getElementById('login-title').innerText = "Accès " + (role === 'admin' ? "Administrateur" : "Blogueur");
+}
+
+function backToPortal() {
+    document.getElementById('portal-login').classList.add('hidden');
+    document.getElementById('portal-selection').classList.remove('hidden');
+}
+
+function handleLogin(e) {
+    e.preventDefault();
+    const user = document.getElementById('login-user').value;
+    const pass = document.getElementById('access-password').value;
+
+    if (user !== "" && pass !== "") {
+        if (currentRole === 'admin') {
+            window.location.href = "index5.html";
+        } else {
+            // On ajoute un paramètre pour forcer l'onglet rédaction
+            window.location.href = "index3.html?role=blogger";
         }
+    } else {
+        alert("Veuillez remplir tous les champs.");
+    }
+}
 
-        // --- C. CHARGEMENT DYNAMIQUE DES ARTICLES ADMIN ---
-        function displayArticles() {
-            const container = document.getElementById('articles-container');
-            if (!container) return;
+// --- E. MODALE ABONNEMENT ---
+function openModal(titre) {
+    const modalTitle = document.querySelector('#subscription-modal h2');
+    if (modalTitle) modalTitle.innerText = titre;
+    document.getElementById('subscription-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
 
-            const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
+function closeModal() {
+    document.getElementById('subscription-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
 
-            if (posts.length === 0) {
-                container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
-                return;
-            }
+// --- F. INITIALISATION ---
+window.onload = () => {
+    refreshNews();
+    displayArticles();
+    setInterval(refreshNews, 10000);
 
-            container.innerHTML = posts.map(post => `
-            <article class="news-card group cursor-pointer border-b lg:border-none pb-6">
-                <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
-                    <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
-                    <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
-                </div>
-                <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.date}</p>
-                <h3 class="serif text-2xl font-bold leading-tight group-hover:text-blue-600 transition">${post.title}</h3>
-                <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.substring(0, 120)}...</p>
-                <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
-            </article>
-        `).join('');
-        }
-
-        // --- D. GESTION DES RECHERCHES ---
-        function searchWeb() {
-            const q = document.getElementById('search-bar').value;
-            if (q.trim() !== "") alert("Recherche SEO : " + q);
-        }
-
-        // --- E. LANCEMENT ET ÉCOUTEURS TEMPS RÉEL ---
-
-        // Au chargement de la page
-        window.onload = () => {
-            refreshNews();
-            displayArticles();
-        };
-
-        // Rafraîchir le flux news toutes les 10 secondes
-        setInterval(refreshNews, 10000);
-
-        // DÉTECTION INSTANTANÉE : Si tu publies dans l'admin, ça apparaît ici sans F5
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'abrand_posts') {
-                displayArticles();
-            }
-        });
-        // --- FONCTIONS DE LA MODALE ---
-
-        // 1. Ouvrir la modale
-        function openModal(titrePersonnalise) {
-            // On change le titre de la modale dynamiquement
-            document.querySelector('#subscription-modal h2').innerText = titrePersonnalise;
-
-            // On affiche la modale
-            document.getElementById('subscription-modal').classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-        }
-
-        // 2. Fermer la modale
-        function closeModal() {
-            document.getElementById('subscription-modal').classList.add('hidden');
-            document.body.style.overflow = 'auto'; // Réactive le scroll
-        }
-
-        // 3. Gestion de l'envoi du formulaire
-        document.getElementById('subscribe-form').addEventListener('submit', function (e) {
-            e.preventDefault(); // Empêche le rechargement de la page
-
-            // Récupération des données saisies
-            const data = {
-                nom: document.getElementById('sub-nom').value,
-                prenom: document.getElementById('sub-prenom').value,
-                email: document.getElementById('sub-email').value,
-                date: new Date().toLocaleString('fr-FR')
-            };
-
-            // Sauvegarde locale (pour ne pas perdre les données au rafraîchissement)
-            let subscribers = JSON.parse(localStorage.getItem('abrand_subscribers')) || [];
-            subscribers.push(data);
-            localStorage.setItem('abrand_subscribers', JSON.stringify(subscribers));
-
-            // Affichage du message de succès
+    // Sécurité pour le formulaire d'abonnement
+    const subForm = document.getElementById('subscribe-form');
+    if (subForm) {
+        subForm.addEventListener('submit', function (e) {
+            e.preventDefault();
             const msg = document.getElementById('sub-message');
-            msg.innerText = `Merci ${data.prenom} ! Inscription validée.`;
-            msg.classList.remove('hidden');
-
-            // Fermeture automatique après 2 secondes
-            setTimeout(() => {
-                closeModal();
-                this.reset(); // Vide les champs du formulaire
-                msg.classList.add('hidden');
-            }, 2000);
-
-            console.log("Nouvel abonné enregistré :", data);
+            if (msg) {
+                msg.innerText = "Inscription validée !";
+                msg.classList.remove('hidden');
+                setTimeout(() => { closeModal(); msg.classList.add('hidden'); this.reset(); }, 2000);
+            }
         });
+    }
+};
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'abrand_posts') displayArticles();
+});
+
+function searchWeb() {
+    const q = document.getElementById('search-bar').value;
+    if (q.trim() !== "") alert("Recherche SEO : " + q);
+}
     </script>
     <div id="subscription-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white p-8 max-w-md w-full relative border-t-8 border-orange-500 shadow-2xl">

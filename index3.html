@@ -444,6 +444,13 @@
         setInterval(refreshRealStats, 3000);
         refreshRealStats();
         lucide.createIcons();
+        // Ce code vérifie si l'URL contient "role=blogger" au chargement
+window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('role') === 'blogger') {
+        showTab('blogger'); // Ouvre automatiquement l'onglet de rédaction
+    }
+});
     </script>
 </body>
 
