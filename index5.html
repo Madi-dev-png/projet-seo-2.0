@@ -196,9 +196,30 @@
             const content = document.getElementById(`edit-content-${id}`).value;
             const seo = getSEOScore(title, content);
 
+            // --- VERROU DE SÉCURITÉ : BLOQUER SI < 60% ---
+            if (seo.score < 60) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Publication Bloquée',
+                    html: `
+                        <div class="text-sm">
+                            <p class="mb-4">Le score SEO actuel est de <b class="text-red-500">${seo.score}%</b>.</p>
+                            <p class="bg-red-500/10 p-3 rounded border border-red-500/20 text-red-600">
+                                <b>Règle :</b> Un article doit atteindre au moins <b>60%</b> pour être mis en ligne.
+                            </p>
+                            <p class="mt-4 italic">Conseil : Allongez le texte ou ajoutez des mots-clés stratégiques (Abidjan, Côte d'Ivoire...).</p>
+                        </div>
+                    `,
+                    confirmButtonColor: '#FF8200',
+                    confirmButtonText: 'Corriger l\'article'
+                });
+                return; // On arrête tout ici
+            }
+
+            // --- SI LE SCORE EST >= 60%, ON PROCÈDE À LA CONFIRMATION ---
             Swal.fire({
                 title: 'Publier cet article ?',
-                html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b></p>`,
+                html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b> (Conforme)</p>`,
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#22c55e',
