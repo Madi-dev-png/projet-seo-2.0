@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion | Abrand News CI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .bg-custom-green { background-color: #2D4F3F; } /* Vert profond */
+        .text-custom-green { color: #2D4F3F; }
+    </style>
+</head>
+<body class="bg-slate-100 h-screen flex items-center justify-center">
+
+    <div class="bg-white w-full max-w-4xl h-[600px] flex rounded-2xl shadow-2xl overflow-hidden mx-4">
+        
+        <div class="hidden md:flex md:w-1/2 relative">
+            <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80" 
+                 alt="Bureau Abrand" 
+                 class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-emerald-900/40 backdrop-blur-[2px] flex flex-col justify-end p-10 text-white">
+                <h2 class="text-3xl font-bold leading-tight">Espace Rédaction <br>Abrand News CI</h2>
+                <p class="mt-4 text-emerald-50 opacity-80 text-sm italic">"L'excellence de l'information commence ici."</p>
+            </div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-10 flex flex-col justify-center bg-slate-50">
+            <div class="mb-10 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-2 mb-4">
+                    <div class="w-10 h-10 bg-custom-green rounded-lg flex items-center justify-center">
+                        <i data-lucide="shield-check" class="text-white w-6 h-6"></i>
+                    </div>
+                    <span class="text-xl font-black text-slate-800 tracking-tighter uppercase italic">Abrand <span class="text-emerald-600">Admin</span></span>
+                </div>
+                <h1 class="text-2xl font-bold text-slate-800">Bon retour !</h1>
+                <p class="text-slate-500 text-sm mt-1">Veuillez vous identifier pour accéder au panel.</p>
+            </div>
+
+            <form class="space-y-6">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Identifiant</label>
+                    <div class="relative">
+                        <i data-lucide="user" class="absolute left-3 top-3 w-5 h-5 text-slate-400"></i>
+                        <input type="text" placeholder="Admin_01" 
+                               class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 transition-all text-slate-700 shadow-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Mot de passe</label>
+                    <div class="relative">
+                        <i data-lucide="lock" class="absolute left-3 top-3 w-5 h-5 text-slate-400"></i>
+                        <input type="password" placeholder="••••••••" 
+                               class="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:border-emerald-600 transition-all text-slate-700 shadow-sm">
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs">
+                    <label class="flex items-center gap-2 text-slate-500 cursor-pointer">
+                        <input type="checkbox" class="accent-emerald-600"> Se souvenir de moi
+                    </label>
+                    <a href="#" class="text-emerald-700 font-semibold hover:underline">Oublié ?</a>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-custom-green text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-900/20 hover:bg-emerald-800 transition-all uppercase text-sm tracking-widest mt-4">
+                    Se Connecter
+                </button>
+            </form>
+
+            <p class="mt-8 text-center text-slate-400 text-[10px] uppercase font-medium">
+                Propulsé par le système de contrôle SEO Abrand
+            </p>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
