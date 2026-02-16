@@ -78,15 +78,15 @@
                     class="border-b border-black text-xs px-2 focus:outline-none focus:w-48 transition-all">
                 <button onclick="searchWeb()">🔍</button>
             </div>
-            <button onclick="openModal('CRÉER UN COMPTE')" 
-    class="hover:text-orange-500 text-xs font-black uppercase tracking-tighter transition-all">
-    S'inscrire
-</button>
+            <button onclick="openModal('CRÉER UN COMPTE')"
+                class="hover:text-orange-500 text-xs font-black uppercase tracking-tighter transition-all">
+                S'inscrire
+            </button>
 
-<button onclick="openModal('S\'ABONNER À LA NEWSLETTER')"
-    class="bg-[#FF8200] text-white px-8 py-3 text-xs font-black uppercase tracking-widest hover:bg-black hover:scale-105 transition-all duration-300 shadow-lg">
-    S'abonner
-</button>
+            <button onclick="openModal('S\'ABONNER À LA NEWSLETTER')"
+                class="bg-[#FF8200] text-white px-8 py-3 text-xs font-black uppercase tracking-widest hover:bg-black hover:scale-105 transition-all duration-300 shadow-lg">
+                S'abonner
+            </button>
         </div>
     </div>
     <header class="max-w-7xl mx-auto py-12 text-center">
@@ -142,41 +142,48 @@
             </div>
         </div>
 
-    <div id="portal-login" class="hidden w-full max-w-md bg-white p-10 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.2)] border border-[#AFAFAF]/20">
-    <div class="text-center mb-10">
-        <h3 id="login-title" class="serif text-4xl font-black uppercase tracking-tighter mb-2 text-slate-900">Connexion</h3>
-        <div class="h-1.5 w-16 bg-[#83A697] mx-auto"></div>
-        <p class="text-[10px] text-[#AFAFAF] uppercase tracking-[0.3em] mt-4 font-bold">Veuillez entrer vos accès éditeur</p>
-    </div>
+        <div id="portal-login"
+            class="hidden w-full max-w-md bg-white p-10 shadow-[0_35px_60px_-15px_rgba(0,0,0,0.2)] border border-[#AFAFAF]/20">
+            <div class="text-center mb-10">
+                <h3 id="login-title" class="serif text-4xl font-black uppercase tracking-tighter mb-2 text-slate-900">
+                    Connexion</h3>
+                <div class="h-1.5 w-16 bg-[#83A697] mx-auto"></div>
+                <p class="text-[10px] text-[#AFAFAF] uppercase tracking-[0.3em] mt-4 font-bold">Veuillez entrer vos
+                    accès éditeur</p>
+            </div>
 
-    <form onsubmit="handleLogin(event)" class="space-y-8">
-        <div class="relative group">
-            <input type="text" id="login-user" required 
-                class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
-            <label class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
-                Identifiant
-            </label>
+            <form onsubmit="handleLogin(event)" class="space-y-8">
+                <div class="relative group">
+                    <input type="text" id="login-user" required
+                        class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
+                    <label
+                        class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
+                        Identifiant
+                    </label>
+                </div>
+
+                <div class="relative group">
+                    <input type="password" id="access-password" required
+                        class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
+                    <label
+                        class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
+                        Mot de passe
+                    </label>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit"
+                        class="w-full bg-[#FFB921] text-white py-5 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#83A697] transition-all duration-500 transform hover:-translate-y-1 shadow-lg">
+                        Valider l'authentification
+                    </button>
+                </div>
+
+                <button type="button" onclick="backToPortal()"
+                    class="w-full text-[10px] uppercase font-black text-[#AFAFAF] hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
+                    <span class="text-lg">←</span> Retour aux profils
+                </button>
+            </form>
         </div>
-
-        <div class="relative group">
-            <input type="password" id="access-password" required 
-                class="w-full border-b-2 border-[#AFAFAF]/30 py-3 bg-transparent focus:outline-none focus:border-[#83A697] transition-colors peer placeholder-transparent text-slate-800">
-            <label class="absolute left-0 -top-3.5 text-[#AFAFAF] text-xs uppercase font-black transition-all peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:top-3 peer-focus:-top-3.5 peer-focus:text-[#83A697] peer-focus:text-xs">
-                Mot de passe
-            </label>
-        </div>
-
-        <div class="pt-4">
-            <button type="submit" class="w-full bg-[#FFB921] text-white py-5 font-black text-xs uppercase tracking-[0.2em] hover:bg-[#83A697] transition-all duration-500 transform hover:-translate-y-1 shadow-lg">
-                Valider l'authentification
-            </button>
-        </div>
-
-        <button type="button" onclick="backToPortal()" class="w-full text-[10px] uppercase font-black text-[#AFAFAF] hover:text-slate-900 transition-colors flex items-center justify-center gap-2">
-            <span class="text-lg">←</span> Retour aux profils
-        </button>
-    </form>
-</div>
     </div>
 
 
@@ -325,52 +332,52 @@
 
     <script>
         // --- A. INITIALISATION DATE ---
-const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-const dateElement = document.getElementById('date-now');
-if (dateElement) dateElement.innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
+        const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const dateElement = document.getElementById('date-now');
+        if (dateElement) dateElement.innerText = new Date().toLocaleDateString('fr-FR', dateOptions);
 
-// --- B. SIMULATION SCANNER (NEWS SOURCES) ---
-const newsSources = [
-    { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
-    { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
-    { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
-    { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
-    { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
-    { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
-    { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
-];
+        // --- B. SIMULATION SCANNER (NEWS SOURCES) ---
+        const newsSources = [
+            { cat: "TECH", title: "L'IA générative arrive dans les universités d'Abidjan." },
+            { cat: "AGRI", title: "Cacao : Une nouvelle application pour tracer l'origine durable." },
+            { cat: "SÉCURITÉ", title: "Microsoft alerte sur une hausse des cyber-attaques en Afrique de l'Ouest." },
+            { cat: "CI", title: "Inauguration du nouveau pont : Impact sur l'économie du Plateau." },
+            { cat: "ÉCO", title: "Inès Leonarduzzi : 'Le reconditionné est l'avenir de la tech en CI'." },
+            { cat: "POLITIQUE", title: "Réforme foncière : Le gouvernement présente son plan à l'Assemblée." },
+            { cat: "CULTURE", title: "Festival des masques à Man : La tradition à l'ère numérique." }
+        ];
 
-function refreshNews() {
-    const list = document.getElementById('dynamic-news-list');
-    const ticker = document.getElementById('live-news-ticker');
-    if (!list || !ticker) return;
+        function refreshNews() {
+            const list = document.getElementById('dynamic-news-list');
+            const ticker = document.getElementById('live-news-ticker');
+            if (!list || !ticker) return;
 
-    const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
-    let tickerContent = "";
-    list.innerHTML = "";
-    shuffled.forEach(news => {
-        list.innerHTML += `
+            const shuffled = newsSources.sort(() => 0.5 - Math.random()).slice(0, 3);
+            let tickerContent = "";
+            list.innerHTML = "";
+            shuffled.forEach(news => {
+                list.innerHTML += `
         <div class="group cursor-pointer border-b border-gray-200 pb-4">
             <span class="text-[10px] font-black text-orange-600 uppercase">${news.cat}</span>
             <h4 class="font-bold text-sm leading-tight group-hover:text-blue-600 transition">${news.title}</h4>
         </div>`;
-        tickerContent += `${news.cat} : ${news.title} • `;
-    });
-    ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
-}
+                tickerContent += `${news.cat} : ${news.title} • `;
+            });
+            ticker.innerText = tickerContent + "Flux SEO Abrand News activé • ";
+        }
 
-// --- C. CHARGEMENT DYNAMIQUE DES ARTICLES ---
-function displayArticles() {
-    const container = document.getElementById('articles-container');
-    if (!container) return;
-    const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
-    
-    if (posts.length === 0) {
-        container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
-        return;
-    }
+        // --- C. CHARGEMENT DYNAMIQUE DES ARTICLES ---
+        function displayArticles() {
+            const container = document.getElementById('articles-container');
+            if (!container) return;
+            const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
 
-    container.innerHTML = posts.map(post => `
+            if (posts.length === 0) {
+                container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
         <article class="news-card group cursor-pointer border-b lg:border-none pb-6" onclick="readFullArticle(${post.id})">
             <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
                 <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
@@ -382,124 +389,124 @@ function displayArticles() {
             <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
         </article>
     `).join('');
-}
-
-// --- D. GESTION DU PORTAIL (CONNEXION) ---
-let currentRole = "";
-
-function openPortal() {
-    document.getElementById('portal-modal').classList.remove('hidden');
-    document.getElementById('portal-selection').classList.remove('hidden');
-    document.getElementById('portal-login').classList.add('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closePortal() {
-    document.getElementById('portal-modal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-function showLoginForm(role) {
-    currentRole = role;
-    document.getElementById('portal-selection').classList.add('hidden');
-    document.getElementById('portal-login').classList.remove('hidden');
-    document.getElementById('login-title').innerText = "Accès " + (role === 'admin' ? "Administrateur" : "Blogueur");
-}
-
-function backToPortal() {
-    document.getElementById('portal-login').classList.add('hidden');
-    document.getElementById('portal-selection').classList.remove('hidden');
-}
-
-function handleLogin(e) {
-    e.preventDefault();
-    const user = document.getElementById('login-user').value;
-    const pass = document.getElementById('access-password').value;
-
-    if (user !== "" && pass !== "") {
-        if (currentRole === 'admin') {
-            window.location.href = "index5.html";
-        } else {
-            // On ajoute un paramètre pour forcer l'onglet rédaction
-            window.location.href = "index3.html?role=blogger";
         }
-    } else {
-        alert("Veuillez remplir tous les champs.");
-    }
-}
 
-// --- E. MODALE ABONNEMENT ---
-function openModal(titre) {
-    const modalTitle = document.querySelector('#subscription-modal h2');
-    if (modalTitle) modalTitle.innerText = titre;
-    document.getElementById('subscription-modal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
+        // --- D. GESTION DU PORTAIL (CONNEXION) ---
+        let currentRole = "";
 
-function closeModal() {
-    document.getElementById('subscription-modal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
+        function openPortal() {
+            document.getElementById('portal-modal').classList.remove('hidden');
+            document.getElementById('portal-selection').classList.remove('hidden');
+            document.getElementById('portal-login').classList.add('hidden');
+            document.body.style.overflow = 'hidden';
+        }
 
-// --- F. INITIALISATION ---
-window.onload = () => {
-    refreshNews();
-    displayArticles();
-    setInterval(refreshNews, 10000);
+        function closePortal() {
+            document.getElementById('portal-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
 
-    // Sécurité pour le formulaire d'abonnement
-    const subForm = document.getElementById('subscribe-form');
-    if (subForm) {
-        subForm.addEventListener('submit', function (e) {
+        function showLoginForm(role) {
+            currentRole = role;
+            document.getElementById('portal-selection').classList.add('hidden');
+            document.getElementById('portal-login').classList.remove('hidden');
+            document.getElementById('login-title').innerText = "Accès " + (role === 'admin' ? "Administrateur" : "Blogueur");
+        }
+
+        function backToPortal() {
+            document.getElementById('portal-login').classList.add('hidden');
+            document.getElementById('portal-selection').classList.remove('hidden');
+        }
+
+        function handleLogin(e) {
             e.preventDefault();
-            const msg = document.getElementById('sub-message');
-            if (msg) {
-                msg.innerText = "Inscription validée !";
-                msg.classList.remove('hidden');
-                setTimeout(() => { closeModal(); msg.classList.add('hidden'); this.reset(); }, 2000);
-            }
-        });
-    }
-};
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('access-password').value;
 
-window.addEventListener('storage', (e) => {
-    if (e.key === 'abrand_posts') displayArticles();
-});
-
-function searchWeb() {
-    const q = document.getElementById('search-bar').value;
-    if (q.trim() !== "") alert("Recherche SEO : " + q);
-}
-// --- FONCTION POUR LIRE L'ARTICLE COMPLET ---
-// --- FONCTION POUR LIRE L'ARTICLE COMPLET (VERSION COMPACTE) ---
-function readFullArticle(postId) {
-    const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
-    const post = posts.find(p => p.id == postId);
-
-    if (!post) return;
-
-    // --- LOGIQUE DE FORMATAGE DYNAMIQUE ---
-    const lines = post.content.split('\n');
-    let formattedContent = "";
-    let isFirstParagraph = true;
-
-    lines.forEach(line => {
-        if (line.startsWith('##')) {
-            // Transforme ## en Sous-titre
-            formattedContent += `<h2 class="serif text-2xl font-black mt-8 mb-3 text-slate-900 border-l-4 border-orange-500 pl-4">${line.replace('##', '').trim()}</h2>`;
-        } else if (line.trim() !== "") {
-            if (isFirstParagraph) {
-                // Le premier paragraphe (Description du titre / Chapeau)
-                formattedContent += `<p class="text-xl font-bold leading-tight text-slate-600 mb-6 italic">${line}</p>`;
-                isFirstParagraph = false;
+            if (user !== "" && pass !== "") {
+                if (currentRole === 'admin') {
+                    window.location.href = "index5.html";
+                } else {
+                    // On ajoute un paramètre pour forcer l'onglet rédaction
+                    window.location.href = "index3.html?role=blogger";
+                }
             } else {
-                // Paragraphe normal
-                formattedContent += `<p class="text-lg leading-snug text-slate-800 mb-4">${line}</p>`;
+                alert("Veuillez remplir tous les champs.");
             }
         }
-    });
 
-    const readerHtml = `
+        // --- E. MODALE ABONNEMENT ---
+        function openModal(titre) {
+            const modalTitle = document.querySelector('#subscription-modal h2');
+            if (modalTitle) modalTitle.innerText = titre;
+            document.getElementById('subscription-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('subscription-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- F. INITIALISATION ---
+        window.onload = () => {
+            refreshNews();
+            displayArticles();
+            setInterval(refreshNews, 10000);
+
+            // Sécurité pour le formulaire d'abonnement
+            const subForm = document.getElementById('subscribe-form');
+            if (subForm) {
+                subForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const msg = document.getElementById('sub-message');
+                    if (msg) {
+                        msg.innerText = "Inscription validée !";
+                        msg.classList.remove('hidden');
+                        setTimeout(() => { closeModal(); msg.classList.add('hidden'); this.reset(); }, 2000);
+                    }
+                });
+            }
+        };
+
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'abrand_posts') displayArticles();
+        });
+
+        function searchWeb() {
+            const q = document.getElementById('search-bar').value;
+            if (q.trim() !== "") alert("Recherche SEO : " + q);
+        }
+        // --- FONCTION POUR LIRE L'ARTICLE COMPLET ---
+        // --- FONCTION POUR LIRE L'ARTICLE COMPLET (VERSION COMPACTE) ---
+        function readFullArticle(postId) {
+            const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
+            const post = posts.find(p => p.id == postId);
+
+            if (!post) return;
+
+            // --- LOGIQUE DE FORMATAGE DYNAMIQUE ---
+            const lines = post.content.split('\n');
+            let formattedContent = "";
+            let isFirstParagraph = true;
+
+            lines.forEach(line => {
+                if (line.startsWith('##')) {
+                    // Transforme ## en Sous-titre
+                    formattedContent += `<h2 class="serif text-2xl font-black mt-8 mb-3 text-slate-900 border-l-4 border-orange-500 pl-4">${line.replace('##', '').trim()}</h2>`;
+                } else if (line.trim() !== "") {
+                    if (isFirstParagraph) {
+                        // Le premier paragraphe (Description du titre / Chapeau)
+                        formattedContent += `<p class="text-xl font-bold leading-tight text-slate-600 mb-6 italic">${line}</p>`;
+                        isFirstParagraph = false;
+                    } else {
+                        // Paragraphe normal
+                        formattedContent += `<p class="text-lg leading-snug text-slate-800 mb-4">${line}</p>`;
+                    }
+                }
+            });
+
+            const readerHtml = `
         <div id="reader-modal" class="fixed inset-0 bg-white z-[200] overflow-y-auto p-4 md:p-12">
             <div class="max-w-3xl mx-auto">
                 <button onclick="closeReader()" class="fixed top-4 left-4 text-3xl font-light hover:rotate-90 transition-transform bg-white/80 rounded-full w-10 h-10 shadow-sm border border-gray-100 flex items-center justify-center">×</button>
@@ -525,14 +532,14 @@ function readFullArticle(postId) {
         </div>
     `;
 
-    document.body.insertAdjacentHTML('beforeend', readerHtml);
-    document.body.style.overflow = 'hidden';
-}
-function closeReader() {
-    const reader = document.getElementById('reader-modal');
-    if (reader) reader.remove();
-    document.body.style.overflow = 'auto';
-}
+            document.body.insertAdjacentHTML('beforeend', readerHtml);
+            document.body.style.overflow = 'hidden';
+        }
+        function closeReader() {
+            const reader = document.getElementById('reader-modal');
+            if (reader) reader.remove();
+            document.body.style.overflow = 'auto';
+        }
     </script>
     <div id="subscription-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center p-4">
         <div class="bg-white p-8 max-w-md w-full relative border-t-8 border-orange-500 shadow-2xl">
