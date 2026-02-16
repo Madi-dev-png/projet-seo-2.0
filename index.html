@@ -377,18 +377,33 @@
                 return;
             }
 
-            container.innerHTML = posts.map(post => `
-        <article class="news-card group cursor-pointer border-b lg:border-none pb-6" onclick="readFullArticle(${post.id})">
-            <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
-                <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
-                <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
-            </div>
-            <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.date}</p>
-            <h3 class="serif text-2xl font-bold leading-tight group-hover:text-blue-600 transition">${post.title}</h3>
-            <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.substring(0, 120)}...</p>
-            <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
-        </article>
-    `).join('');
+            container.innerHTML = posts.map(post => {
+                // On récupère le premier mot-clé s'il y en a plusieurs (séparés par des virgules)
+                const primaryKeyword = post.seo && post.seo.keywords
+                    ? post.seo.keywords.split(',')[0].trim()
+                    : 'ACTUALITÉ';
+
+                return `
+            <article class="news-card group cursor-pointer border-b lg:border-none pb-6" onclick="readFullArticle(${post.id})">
+                <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
+                    <img src="${post.image}" 
+     alt="${post.seo && post.seo.alt ? post.seo.alt : post.title}" 
+     class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
+                    <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
+                </div>
+
+                <p class="text-emerald-600 font-black text-[10px] uppercase mb-2 tracking-widest">
+                    ${primaryKeyword}
+                </p>
+
+                <p class="text-orange-600 font-black text-[10px] uppercase mb-2 tracking-widest">${post.date}</p>
+                <h3 class="serif text-2xl font-bold leading-tight group-hover:text-blue-600 transition">${post.title}</h3>
+                <p class="text-sm text-gray-500 mt-3 italic line-clamp-3">${post.content.substring(0, 120)}...</p>
+                <button class="mt-4 text-[10px] font-black uppercase border-b-2 border-black pb-1">Lire l'article</button>
+            </article>
+        `;
+            }).join('');
+
         }
 
         // --- D. GESTION DU PORTAIL (CONNEXION) ---
@@ -492,26 +507,28 @@
 
             lines.forEach(line => {
                 if (line.startsWith('##')) {
-                    // Transforme ## en Sous-titre
                     formattedContent += `<h2 class="serif text-2xl font-black mt-8 mb-3 text-slate-900 border-l-4 border-orange-500 pl-4">${line.replace('##', '').trim()}</h2>`;
                 } else if (line.trim() !== "") {
                     if (isFirstParagraph) {
-                        // Le premier paragraphe (Description du titre / Chapeau)
                         formattedContent += `<p class="text-xl font-bold leading-tight text-slate-600 mb-6 italic">${line}</p>`;
                         isFirstParagraph = false;
                     } else {
-                        // Paragraphe normal
                         formattedContent += `<p class="text-lg leading-snug text-slate-800 mb-4">${line}</p>`;
                     }
                 }
             });
 
+            // --- MISE À JOUR DU READER HTML (AVEC LES MOTS-CLÉS EN VERT) ---
             const readerHtml = `
         <div id="reader-modal" class="fixed inset-0 bg-white z-[200] overflow-y-auto p-4 md:p-12">
             <div class="max-w-3xl mx-auto">
                 <button onclick="closeReader()" class="fixed top-4 left-4 text-3xl font-light hover:rotate-90 transition-transform bg-white/80 rounded-full w-10 h-10 shadow-sm border border-gray-100 flex items-center justify-center">×</button>
                 
                 <header class="mb-8">
+                    <p class="text-emerald-600 font-black text-[11px] uppercase tracking-[0.2em] mb-2">
+                        ${post.seo && post.seo.keywords ? post.seo.keywords : 'ACTUALITÉ'}
+                    </p>
+                    
                     <p class="text-orange-600 font-black text-[10px] uppercase tracking-widest mb-2">${post.date} • EXCLUSIF</p>
                     <h1 class="serif text-4xl md:text-6xl font-black leading-none mb-6 text-slate-900 uppercase italic">${post.title}</h1>
                 </header>
