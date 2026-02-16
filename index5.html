@@ -274,6 +274,24 @@
         }, 2000);
 
         window.onload = () => { loadQueue(); lucide.createIcons(); };
+        function sendNotification(titre, message) {
+    // 1. On récupère les notifications existantes ou on crée un tableau vide
+    let notifications = JSON.parse(localStorage.getItem('abrand_notifications')) || [];
+
+    // 2. On crée le nouvel objet notification
+    const newNotif = {
+        id: Date.now(),
+        title: titre,
+        message: message,
+        date: new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
+        status: "unread" // Statut non lu pour faire apparaître le badge rouge
+    };
+
+    // 3. On l'ajoute à la liste et on sauvegarde
+    notifications.push(newNotif);
+    localStorage.setItem('abrand_notifications', JSON.stringify(notifications));
+}
+
     </script>
 </body>
 
