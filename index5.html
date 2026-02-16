@@ -247,26 +247,7 @@
                 }
             });
         }
-        // ... (dans la fonction approve, après result.isConfirmed)
-if (index > -1) {
-    const article = pending[index];
-    // ... tes modifs existantes ...
-
-    // --- AJOUT : NOTIFICATION POUR LE BLOGUEUR ---
-    let notifications = JSON.parse(localStorage.getItem('abrand_notifications')) || [];
-    notifications.push({
-        id: Date.now(),
-        message: `Félicitations ! Votre article "${article.title}" a été validé et publié.`,
-        type: 'success',
-        date: new Date().toLocaleTimeString()
-    });
-    localStorage.setItem('abrand_notifications', JSON.stringify(notifications));
-    // ----------------------------------------------
-
-    posts.unshift(article);
-    pending.splice(index, 1);
-    // ... reste du code
-}
+        
 
         function reject(id) {
             Swal.fire({ title: 'Supprimer ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' }).then((result) => {

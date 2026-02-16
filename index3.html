@@ -548,35 +548,7 @@
                 showTab('blogger');
             }
         });
-        // Fonction pour vérifier les notifications
-function checkNotifications() {
-    let notifications = JSON.parse(localStorage.getItem('abrand_notifications')) || [];
-    
-    if (notifications.length > 0) {
-        notifications.forEach(notif => {
-            // Affiche la notification au blogueur
-            Swal.fire({
-                title: 'Notification Admin',
-                text: notif.message,
-                icon: notif.type,
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 5000,
-                timerProgressBar: true
-            });
-        });
-
-        // Une fois affichées, on vide les notifications pour ne pas les ravoir en boucle
-        localStorage.setItem('abrand_notifications', JSON.stringify([]));
-    }
-}
-
-// Vérifier toutes les 5 secondes
-setInterval(checkNotifications, 5000);
-
-// Vérifier aussi dès le chargement de la page
-window.addEventListener('load', checkNotifications);
+        
     </script>
 </body>
 
