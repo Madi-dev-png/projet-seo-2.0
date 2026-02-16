@@ -364,12 +364,14 @@ function displayArticles() {
     const container = document.getElementById('articles-container');
     if (!container) return;
     const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
+    
     if (posts.length === 0) {
         container.innerHTML = `<p class="col-span-full text-center text-gray-400 italic py-10">Aucune publication récente.</p>`;
         return;
     }
+
     container.innerHTML = posts.map(post => `
-        <article class="news-card group cursor-pointer border-b lg:border-none pb-6">
+        <article class="news-card group cursor-pointer border-b lg:border-none pb-6" onclick="readFullArticle(${post.id})">
             <div class="overflow-hidden mb-4 relative h-64 bg-gray-100">
                 <img src="${post.image}" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition duration-700">
                 <div class="absolute top-0 right-0 bg-[#FF8200] text-white px-3 py-1 text-[10px] font-black">NOUVEAU</div>
@@ -467,6 +469,49 @@ window.addEventListener('storage', (e) => {
 function searchWeb() {
     const q = document.getElementById('search-bar').value;
     if (q.trim() !== "") alert("Recherche SEO : " + q);
+}
+// --- FONCTION POUR LIRE L'ARTICLE COMPLET ---
+// --- FONCTION POUR LIRE L'ARTICLE COMPLET (VERSION COMPACTE) ---
+function readFullArticle(postId) {
+    const posts = JSON.parse(localStorage.getItem('abrand_posts')) || [];
+    const post = posts.find(p => p.id == postId);
+
+    if (!post) return;
+
+    const readerHtml = `
+        <div id="reader-modal" class="fixed inset-0 bg-white z-[200] overflow-y-auto p-4 md:p-12">
+            <div class="max-w-3xl mx-auto">
+                <button onclick="closeReader()" class="fixed top-4 left-4 text-3xl font-light hover:rotate-90 transition-transform bg-white/80 rounded-full w-10 h-10 shadow-sm border border-gray-100 flex items-center justify-center">×</button>
+                
+                <header class="text-center mb-6">
+                    <p class="text-orange-600 font-black text-[10px] uppercase tracking-widest mb-2">${post.date}</p>
+                    <h1 class="serif text-3xl md:text-5xl font-black leading-tight mb-4 text-slate-900">${post.title}</h1>
+                    <div class="h-1 w-12 bg-orange-500 mx-auto"></div>
+                </header>
+
+                <div class="relative h-64 md:h-96 mb-8 shadow-lg overflow-hidden rounded-sm">
+                    <img src="${post.image}" class="w-full h-full object-cover">
+                </div>
+
+                <div class="serif text-lg md:text-xl leading-snug text-slate-800 whitespace-pre-line space-y-2">
+                    ${post.content}
+                </div>
+
+                <footer class="mt-12 pt-6 border-t border-gray-100 text-center">
+                    <p class="serif text-lg font-black italic opacity-50">ABRAND NEWS CI</p>
+                    <button onclick="closeReader()" class="mt-4 text-[10px] font-black uppercase bg-black text-white px-6 py-2 rounded-full">Retour au journal</button>
+                </footer>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', readerHtml);
+    document.body.style.overflow = 'hidden';
+}
+function closeReader() {
+    const reader = document.getElementById('reader-modal');
+    if (reader) reader.remove();
+    document.body.style.overflow = 'auto';
 }
     </script>
     <div id="subscription-modal" class="fixed inset-0 bg-black/80 z-[100] hidden flex items-center justify-center p-4">

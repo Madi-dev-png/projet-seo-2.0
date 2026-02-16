@@ -98,24 +98,33 @@
     <script>
         let currentCount = 0;
 
-        // --- NOUVEAU : FONCTION DE RAPPORT DÉTAILLÉ ---
+        // --- NOUVEAU : FONCTION POUR LIRE LE CONTENU COMPLET ---
+        function showFullContent(title, content) {
+            Swal.fire({
+                title: `<span class="text-orange-500 font-black uppercase italic text-lg">${title}</span>`,
+                html: `<div class="text-left text-sm leading-relaxed text-slate-300 bg-slate-900 p-4 rounded-xl border border-white/10 max-h-[60vh] overflow-y-auto whitespace-pre-wrap">${content}</div>`,
+                confirmButtonText: 'Fermer la lecture',
+                confirmButtonColor: '#FF8200',
+                width: '800px',
+                background: '#020617',
+                color: '#f8fafc'
+            });
+        }
+
         function getSEOScore(title, content) {
             let score = 0;
             let report = [];
             const words = content.trim().split(/\s+/).length;
 
-            // 1. Longueur (Poids 40)
             if (words > 150) { score += 40; report.push("✅ Longueur : Excellente (" + words + " mots)"); }
             else if (words > 60) { score += 20; report.push("⚠️ Longueur : Passable, visez 150 mots."); }
             else { report.push("❌ Longueur : Trop courte pour Google."); }
 
-            // 2. Mots clés (Poids 30)
             const keywords = ["Côte d'Ivoire", "Abidjan", "Abrand", "Afrique"];
             let found = keywords.filter(k => content.toLowerCase().includes(k.toLowerCase()));
             score += (found.length * 7.5);
             report.push(found.length > 0 ? "✅ Mots-clés trouvés : " + found.join(", ") : "❌ Aucun mot-clé stratégique détecté.");
 
-            // 3. Titre (Poids 30)
             if (title.length > 30) { score += 30; report.push("✅ Titre : Bien structuré."); }
             else { report.push("⚠️ Titre : Trop court pour le SEO."); }
 
@@ -149,13 +158,17 @@
             emptyState.classList.add('hidden');
             container.innerHTML = pending.map(art => {
                 const seo = getSEOScore(art.title, art.content);
+                // Préparer les textes pour les passer en paramètres JS
+                const safeTitle = art.title.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+                const safeContent = art.content.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+
                 return `
                 <div class="glass rounded-2xl p-6 border-l-4 border-orange-500 fade-in mb-6">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div>
                             <div class="flex justify-between items-center mb-2">
                                 <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Aperçu Image</label>
-                                <span onclick="showFullReport(\`${art.title.replace(/'/g, "\\'")}\`, \`${art.content.replace(/'/g, "\\'")}\`)" 
+                                <span onclick="showFullReport('${safeTitle}', '${safeContent}')" 
                                       class="seo-badge text-[10px] font-black px-2 py-0.5 rounded border border-white/10 ${seo.color}">
                                     SEO: ${seo.score}% ⓘ
                                 </span>
@@ -174,6 +187,9 @@
                             <div>
                                 <label class="text-[10px] font-black text-orange-500 uppercase mb-2 block tracking-widest">Contenu éditorial</label>
                                 <textarea id="edit-content-${art.id}" rows="6" class="input-edit text-sm leading-relaxed">${art.content}</textarea>
+                                <button onclick="showFullContent('${safeTitle}', '${safeContent}')" class="text-[10px] text-orange-400 font-bold uppercase mt-2 hover:underline">
+                                    [+] Lire tout l'article
+                                </button>
                             </div>
 
                             <div class="flex gap-4 mt-2">
@@ -196,27 +212,16 @@
             const content = document.getElementById(`edit-content-${id}`).value;
             const seo = getSEOScore(title, content);
 
-            // --- VERROU DE SÉCURITÉ : BLOQUER SI < 60% ---
             if (seo.score < 60) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Publication Bloquée',
-                    html: `
-                        <div class="text-sm">
-                            <p class="mb-4">Le score SEO actuel est de <b class="text-red-500">${seo.score}%</b>.</p>
-                            <p class="bg-red-500/10 p-3 rounded border border-red-500/20 text-red-600">
-                                <b>Règle :</b> Un article doit atteindre au moins <b>60%</b> pour être mis en ligne.
-                            </p>
-                            <p class="mt-4 italic">Conseil : Allongez le texte ou ajoutez des mots-clés stratégiques (Abidjan, Côte d'Ivoire...).</p>
-                        </div>
-                    `,
-                    confirmButtonColor: '#FF8200',
-                    confirmButtonText: 'Corriger l\'article'
+                    html: `<div class="text-sm"><p class="mb-4">Score SEO: <b class="text-red-500">${seo.score}%</b>.</p><p class="bg-red-500/10 p-3 rounded border border-red-500/20 text-red-600"><b>Règle :</b> Minimum <b>60%</b> requis.</p></div>`,
+                    confirmButtonColor: '#FF8200'
                 });
-                return; // On arrête tout ici
+                return;
             }
 
-            // --- SI LE SCORE EST >= 60%, ON PROCÈDE À LA CONFIRMATION ---
             Swal.fire({
                 title: 'Publier cet article ?',
                 html: `<p>Score SEO : <b class="${seo.color}">${seo.score}%</b> (Conforme)</p>`,
@@ -241,13 +246,16 @@
                         pending.splice(index, 1);
                         localStorage.setItem('abrand_posts', JSON.stringify(posts));
                         localStorage.setItem('abrand_pending', JSON.stringify(pending));
+
+                        // ENVOI AUTO DE LA NOTIFICATION
+                        sendNotification("Article Validé ! ✅", `Votre article "${title}" est en ligne.`);
+
                         loadQueue();
                         Swal.fire({ icon: 'success', title: 'En ligne !', timer: 1500, showConfirmButton: false });
                     }
                 }
             });
         }
-        
 
         function reject(id) {
             Swal.fire({ title: 'Supprimer ?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444' }).then((result) => {
@@ -274,23 +282,19 @@
         }, 2000);
 
         window.onload = () => { loadQueue(); lucide.createIcons(); };
+
         function sendNotification(titre, message) {
-    // 1. On récupère les notifications existantes ou on crée un tableau vide
-    let notifications = JSON.parse(localStorage.getItem('abrand_notifications')) || [];
-
-    // 2. On crée le nouvel objet notification
-    const newNotif = {
-        id: Date.now(),
-        title: titre,
-        message: message,
-        date: new Date().toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'}),
-        status: "unread" // Statut non lu pour faire apparaître le badge rouge
-    };
-
-    // 3. On l'ajoute à la liste et on sauvegarde
-    notifications.push(newNotif);
-    localStorage.setItem('abrand_notifications', JSON.stringify(notifications));
-}
+            let notifications = JSON.parse(localStorage.getItem('abrand_notifications')) || [];
+            const newNotif = {
+                id: Date.now(),
+                title: titre,
+                message: message,
+                date: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                status: "unread"
+            };
+            notifications.push(newNotif);
+            localStorage.setItem('abrand_notifications', JSON.stringify(notifications));
+        }
 
     </script>
 </body>
