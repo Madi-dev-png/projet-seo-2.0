@@ -4,6 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Abrand News CI est un portail d'actualité dynamique en Côte d'Ivoire : politique, économie, tech, innovation, cybersécurité et écologie numérique.">
+    <meta name="keywords"
+        content="actualité Côte d'Ivoire, Abidjan news, économie ivoirienne, tech CI, cybersécurité Afrique, innovation Abidjan">
+    <meta name="author" content="Abrand News CI">
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:title" content="Abrand News CI | Portail d'Actualité Dynamique">
+    <meta property="og:description" content="Toute l'actualité ivoirienne et internationale analysée avec expertise.">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="img/preview.jpg">
+    <meta property="og:locale" content="fr_FR">
     <title>Abrand News CI | Portail d'Actualité Dynamique</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link
@@ -517,6 +529,7 @@
                     }
                 }
             });
+            
 
             // --- MISE À JOUR DU READER HTML (AVEC LES MOTS-CLÉS EN VERT) ---
             const readerHtml = `
@@ -552,6 +565,7 @@
             document.body.insertAdjacentHTML('beforeend', readerHtml);
             document.body.style.overflow = 'hidden';
         }
+        
         function closeReader() {
             const reader = document.getElementById('reader-modal');
             if (reader) reader.remove();
